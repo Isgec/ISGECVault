@@ -95,6 +95,20 @@ Namespace SIS.VLT
       tmp.StartPosition = FormStartPosition.CenterScreen
       tmp.ShowDialog(oFrm)
     End Sub
+    Private WithEvents LaunchFile As frmDownload
+    Sub OpenVaultFile(vltFiles As List(Of SIS.VLT.SelectedForDownload))
+      LaunchFile = New frmDownload
+      LaunchFile.ToDownload = vltFiles
+      LaunchFile.OpenFile()
+    End Sub
+    Private Sub LaunchFile_FileOpend(success As Boolean, str As String) Handles LaunchFile.FileOpend
+      LaunchFile.CloseForm()
+      LaunchFile.Dispose()
+      LaunchFile = Nothing
+      If Not success Then
+        MsgBox(str)
+      End If
+    End Sub
   End Module
 
 End Namespace

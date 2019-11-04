@@ -387,6 +387,63 @@ Namespace SIS.VLT
       End Get
     End Property
     Public Property VaultBasePath As String = ""
+    Public Shared Function FileRevisions(VaultDB As String, MasterID As Long, Iteration As Long) As List(Of SIS.VLT.vltFolder)
+      Dim mRet As New List(Of SIS.VLT.vltFolder)
+      Dim Sql As String = ""
+
+      Sql &= " declare @rev int, @ttl int "
+      Sql &= " select @rev=PropertyDefID from PropertyDef where FriendlyName = 'ISGEC_LATESTREVISION' "
+      Sql &= " select @ttl=PropertyDefID from PropertyDef where FriendlyName = 'ISGEC_DRAWINGTITLE' "
+      Sql &= "  "
+      Sql &= " SELECT   "
+      Sql &= "  fi.FileIterationId,   "
+      Sql &= "  e.CreateDate,   "
+      Sql &= "  e.CreateUserID,   "
+      Sql &= "  uf.UserGroupName AS CreateUserName,   "
+      Sql &= "  fm.FileMasterID,   "
+      Sql &= "  i.IterationNumber,   "
+      Sql &= "  fi.FileName,   "
+      Sql &= "  fr.ResourceId,   "
+      Sql &= "  fr.Version AS ResourceVersion,   "
+      Sql &= "  fr.Extension,   "
+      Sql &= "  fr.FileSize,   "
+      Sql &= "  fm.CheckedOut,   "
+      Sql &= "  fm.FolderId,   "
+      Sql &= "  fi.CheckoutDate,   "
+      Sql &= "  fi.LifeCycleStateName, "
+      Sql &= "  (select isnull(value,'') from Property where entityid=fi.FileIterationId and PropertyDefID=@rev) as ISGEC_Rev,  "
+      Sql &= "  (select isnull(value,'') from Property where entityid=fi.FileIterationId and PropertyDefID=@ttl) as ISGEC_Ttl   "
+      Sql &= " FROM  dbo.FileIteration AS fi   "
+      Sql &= "  INNER JOIN dbo.Iteration AS i ON fi.FileIterationId = i.IterationID   "
+      Sql &= "  INNER JOIN dbo.FileResource AS fr ON fr.ResourceId = fi.ResourceId   "
+      Sql &= "  INNER JOIN dbo.Entity AS e ON i.IterationID = e.EntityId   "
+      Sql &= "  INNER JOIN dbo.v_User AS uf ON uf.UserGroupID = e.CreateUserID   "
+      Sql &= "  INNER JOIN dbo.Master AS m ON m.MasterID = i.MasterID   "
+      Sql &= "  INNER JOIN dbo.FileMaster AS fm ON fm.FileMasterID = m.MasterID   "
+      Sql &= "  WHERE fm.FileMasterID =" & MasterID
+      Sql &= "  AND fi.LifeCycleStateName = 'Released' "
+      Sql &= "  AND (fi.FileIterationId  "
+      Sql &= "   < (SELECT max(FileIterationId) "
+      Sql &= "      FROM FileIteration AS aa "
+      Sql &= "      WHERE (LifeCycleStateName = 'Released') AND (FileName = fi.FileName))) "
+      Sql &= "  Order By fi.FileIterationID DESC "
+
+      Using Con As SqlConnection = New SqlConnection(SIS.SYS.SQLDatabase.DBCommon.GetVaultConnectionString(VaultDB))
+        Con.Open()
+        Using Cmd As SqlCommand = Con.CreateCommand()
+          Cmd.CommandType = CommandType.Text
+          Cmd.CommandText = Sql
+          Dim rd As SqlDataReader = Cmd.ExecuteReader
+          While rd.Read
+            Dim tmp As SIS.VLT.vltFolder = New SIS.VLT.vltFolder(rd)
+            tmp.ItemType = "File"
+            mRet.Add(tmp)
+          End While
+          rd.Close()
+        End Using
+      End Using
+      Return mRet
+    End Function
 
     Public Shared Function FilesInFolder(VaultDB As String, Optional ParentFolderID As Long = 1, Optional Latest As Boolean = True) As List(Of SIS.VLT.vltFolder)
       Dim mRet As New List(Of SIS.VLT.vltFolder)

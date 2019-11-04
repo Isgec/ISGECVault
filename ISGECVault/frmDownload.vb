@@ -13,7 +13,18 @@ Public Class frmDownload
   Private Downloading As Integer = -1
   Private timc As TimerCallback = Nothing
   Private xt As System.Threading.Timer = Nothing
-
+  Private ToOpenFile As Boolean = False
+  Public Event FileOpend(success As Boolean, str As String)
+  Public Sub OpenFile()
+    ToOpenFile = True
+    F_SaveAsPath.Text = SIS.VLT.modMain.Settings.SelectedPath
+    cmdDownload_Click(Nothing, Nothing)
+  End Sub
+  Public Sub CloseForm()
+    If mycli IsNot Nothing Then
+      mycli.StopIt = True
+    End If
+  End Sub
   Public Property ToDownload As List(Of SIS.VLT.SelectedForDownload)
     Get
       Return _ToDownload
@@ -191,8 +202,17 @@ Public Class frmDownload
           Exit For
         End If
       Next
-      timc = New TimerCallback(AddressOf DownloadNext)
-      xt = New System.Threading.Timer(timc, Nothing, 1000, Timeout.Infinite)
+      If ToOpenFile Then
+        Try
+          System.Diagnostics.Process.Start(dn.SaveAsPath)
+          RaiseEvent FileOpend(True, "")
+        Catch ex As Exception
+          RaiseEvent FileOpend(False, ex.Message)
+        End Try
+      Else
+        timc = New TimerCallback(AddressOf DownloadNext)
+        xt = New System.Threading.Timer(timc, Nothing, 1000, Timeout.Infinite)
+      End If
     End If
 
   End Sub

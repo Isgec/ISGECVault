@@ -7,7 +7,10 @@
       tmp.VaultDB = vaultDB
       tmp.frmUI = frm
       tmp.Vault = vlt
-      AddHandler frm.cmnuDownload.Click, AddressOf tmp.Grid1_DoubleClick
+      AddHandler frm.cmnuDownload.Click, AddressOf tmp.DownloadMenu_Click
+      AddHandler frm.cmnuOpenOriginal.Click, AddressOf tmp.OpenOriginal_Click
+      AddHandler frm.hmnuDownload.Click, AddressOf tmp.hDownloadMenu_Click
+      AddHandler frm.hmnuOpenOriginal.Click, AddressOf tmp.hOpenOriginal_Click
       LoadedVaults.Add(tmp)
       tmp.Load()
     End Sub
