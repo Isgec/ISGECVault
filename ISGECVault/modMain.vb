@@ -89,17 +89,21 @@ Namespace SIS.VLT
       iconFolder = Nothing
       vltConf = Nothing
     End Sub
-    Sub DownloadFiles(vltFiles As List(Of SIS.VLT.SelectedForDownload))
+    Sub DownloadFiles(vltFiles As List(Of SIS.VLT.SelectedForDownload), x As frmVault)
       Dim tmp As New frmDownload
+      tmp.vltForm = x
       tmp.ToDownload = vltFiles
       tmp.StartPosition = FormStartPosition.CenterScreen
       tmp.ShowDialog(oFrm)
     End Sub
     Private WithEvents LaunchFile As frmDownload
-    Sub OpenVaultFile(vltFiles As List(Of SIS.VLT.SelectedForDownload))
-      LaunchFile = New frmDownload
-      LaunchFile.ToDownload = vltFiles
-      LaunchFile.OpenFile()
+    Sub OpenVaultFile(vltFiles As List(Of SIS.VLT.SelectedForDownload), x As frmVault)
+      If LaunchFile Is Nothing Then
+        LaunchFile = New frmDownload
+        LaunchFile.vltForm = x
+        LaunchFile.ToDownload = vltFiles
+        LaunchFile.OpenFile()
+      End If
     End Sub
     Private Sub LaunchFile_FileOpend(success As Boolean, str As String) Handles LaunchFile.FileOpend
       LaunchFile.CloseForm()

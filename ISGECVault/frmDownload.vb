@@ -15,6 +15,16 @@ Public Class frmDownload
   Private xt As System.Threading.Timer = Nothing
   Private ToOpenFile As Boolean = False
   Public Event FileOpend(success As Boolean, str As String)
+  Private _vltForm As frmVault = Nothing
+  Public Property vltForm As frmVault
+    Get
+      Return _vltForm
+    End Get
+    Set(value As frmVault)
+      _vltForm = value
+      _vltForm.pic1.Visible = True
+    End Set
+  End Property
   Public Sub OpenFile()
     ToOpenFile = True
     F_SaveAsPath.Text = SIS.VLT.modMain.Settings.SelectedPath
@@ -24,7 +34,16 @@ Public Class frmDownload
     If mycli IsNot Nothing Then
       mycli.StopIt = True
     End If
+    If _vltForm IsNot Nothing Then
+      If _vltForm.pic1.InvokeRequired Then
+        _vltForm.pic1.Invoke(New ThreadedNone(AddressOf CloseForm))
+      Else
+        _vltForm.pic1.Visible = False
+        _vltForm = Nothing
+      End If
+    End If
   End Sub
+
   Public Property ToDownload As List(Of SIS.VLT.SelectedForDownload)
     Get
       Return _ToDownload
@@ -66,7 +85,7 @@ Public Class frmDownload
       MessageBox.Show(str & " : " & ex.Message)
     Catch ex As System.Exception
       MessageBox.Show(ex.Message)
-      End Try
+    End Try
     If IP IsNot Nothing Then
       Try
         mycli = New xtcClient(x, IP)
@@ -252,6 +271,13 @@ Public Class frmDownload
       End If
     End With
   End Sub
+
+  Private Sub frmDownload_FormClosing(sender As Object, e As FormClosingEventArgs) Handles Me.FormClosing
+    If _vltForm IsNot Nothing Then
+      _vltForm.pic1.Visible = False
+      _vltForm = Nothing
+    End If
+  End Sub
 End Class
 Public Class xtcClient
   Private lst As ListBox = Nothing
@@ -400,7 +426,15 @@ Public Class xtcClient
       If cmd = "File" Then
         FileMode = True
         If My.Computer.FileSystem.FileExists(dn.SaveAsPath) Then
-          My.Computer.FileSystem.DeleteFile(dn.SaveAsPath)
+          Try
+            My.Computer.FileSystem.DeleteFile(dn.SaveAsPath)
+          Catch ex As Exception
+            FileMode = False
+            MsgBox("File already exists and cannot be overwritten, Please close the file first.")
+            msg("Error: " & dn.SaveAsPath)
+            RaiseEvent FileReceived(dn)
+            Exit Sub
+          End Try
         End If
         msg("File Requested: " & dn.FileName)
       Else
@@ -418,9 +452,6 @@ Public Class xtcClient
       End Try
     End If
   End Sub
-
-
-
   Sub New(x As ListBox, y As IPAddress)
     lst = x
     ServerIP = y
@@ -440,5 +471,4 @@ Public Class xtcClient
     Next
     Return IPAddress.None
   End Function
-
 End Class

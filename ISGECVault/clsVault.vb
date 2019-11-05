@@ -23,6 +23,7 @@ Namespace SIS.VLT
           cmdSearch = Frm1.cmdSearch
           cmdStop = Frm1.cmdStop
           lblSearch = Frm1.lblSearch
+          Pic1 = Frm1.pic1
         End If
       End Set
     End Property
@@ -34,6 +35,8 @@ Namespace SIS.VLT
     Private WithEvents cmdSearch As Button = Nothing
     Private WithEvents cmdStop As Button = Nothing
     Private WithEvents lblSearch As Label = Nothing
+    Private WithEvents Pic1 As PictureBox = Nothing
+
     Public Property VaultDB As String = ""
     Private DownloadMenuClicked As Boolean = False
     Private OpenOriginal As Boolean = False
@@ -67,6 +70,7 @@ Namespace SIS.VLT
       Tree1.Nodes.Add(ND)
     End Sub
     Private Sub LoadData(ParentID As Long)
+      Pic1.Visible = True
       Dim Parent() As TreeNode = Tree1.Nodes.Find(ParentID, True)
       Dim Pnd As TreeNode = Nothing
       If Parent.Count > 0 Then
@@ -97,6 +101,7 @@ Namespace SIS.VLT
         bs.DataSource = flds
         Grid1.DataSource = bs
       End If
+      Pic1.Visible = False
     End Sub
 
     Sub New()
@@ -114,6 +119,7 @@ Namespace SIS.VLT
           cmdSearch = Nothing
           cmdStop = Nothing
           lblSearch = Nothing
+          Pic1 = Nothing
           Tree1.Dispose()
           Tree1 = Nothing
           Grid1.Dispose()
@@ -124,6 +130,7 @@ Namespace SIS.VLT
           frmUI.Dispose()
           frmUI = Nothing
           Vault = Nothing
+
         End If
 
         ' TODO: free unmanaged resources (unmanaged objects) and override Finalize() below.
@@ -178,6 +185,7 @@ Namespace SIS.VLT
 
     Public Sub hGrid1_DoubleClick(sender As Object, e As EventArgs) Handles hGrid1.DoubleClick
       If Searching Then Exit Sub
+      Pic1.Visible = True
       Dim selected As New List(Of SIS.VLT.SelectedForDownload)
       If hGrid1.SelectedRows.Count > 0 Then
         For Each x As DataGridViewRow In hGrid1.SelectedRows
@@ -203,17 +211,18 @@ Namespace SIS.VLT
           selected.Add(y)
         Next
       End If
+      Pic1.Visible = False
       If selected.Count > 0 Then
         If DownloadMenuClicked Then
           DownloadMenuClicked = False
-          SIS.VLT.DownloadFiles(selected)
+          SIS.VLT.DownloadFiles(selected, Frm1)
         Else
           If OpenOriginal Then
             OpenOriginal = False
             selected(0).Original = True
-            SIS.VLT.OpenVaultFile(selected)
+            SIS.VLT.OpenVaultFile(selected, Frm1)
           Else
-            SIS.VLT.OpenVaultFile(selected)
+            SIS.VLT.OpenVaultFile(selected, Frm1)
           End If
         End If
       End If
@@ -221,6 +230,7 @@ Namespace SIS.VLT
 
     Public Sub Grid1_DoubleClick(sender As Object, e As EventArgs) Handles Grid1.DoubleClick
       If Searching Then Exit Sub
+      Pic1.Visible = True
       Dim selected As New List(Of SIS.VLT.SelectedForDownload)
       If Grid1.SelectedRows.Count > 0 Then
         If Grid1.SelectedRows.Count = 1 Then
@@ -268,22 +278,22 @@ Namespace SIS.VLT
           selected.Add(y)
         Next
       End If
+      Pic1.Visible = False
       If selected.Count > 0 Then
         If DownloadMenuClicked Then
           DownloadMenuClicked = False
-          SIS.VLT.DownloadFiles(selected)
+          SIS.VLT.DownloadFiles(selected, Frm1)
         Else
           If OpenOriginal Then
             OpenOriginal = False
             selected(0).Original = True
-            SIS.VLT.OpenVaultFile(selected)
+            SIS.VLT.OpenVaultFile(selected, Frm1)
           Else
-            SIS.VLT.OpenVaultFile(selected)
+            SIS.VLT.OpenVaultFile(selected, Frm1)
           End If
         End If
       End If
     End Sub
-
     Private WithEvents xSearch As SIS.VLT.vltSearch = Nothing
     Delegate Sub ThreadedSearch(VaultDB As String, searchStr As String, Latest As Boolean, grid As DataGridView)
     Delegate Sub NoPara()
@@ -305,6 +315,7 @@ Namespace SIS.VLT
       cmdSearch.Enabled = False
       cmdStop.Enabled = True
       lblSearch.Text = ""
+      Pic1.Visible = True
       Searching = True
       Dim dSearch As ThreadedSearch = New ThreadedSearch(AddressOf LoadSearchData)
       dSearch.BeginInvoke(VaultDB, txtSearch.Text, User.OnlyLatestRev, Grid1, Nothing, Nothing)
@@ -319,6 +330,7 @@ Namespace SIS.VLT
         lblSearch.Text = "Completed"
         xSearch = Nothing
         Searching = False
+        Pic1.Visible = False
       End If
     End Sub
 
@@ -331,6 +343,7 @@ Namespace SIS.VLT
         lblSearch.Text = "Cancelled"
         xSearch = Nothing
         Searching = False
+        Pic1.Visible = False
       End If
     End Sub
 
@@ -381,6 +394,8 @@ Namespace SIS.VLT
     Public Event Cancelled()
     Public Event SearchProgress(str As String)
     Public Sub StartSearch()
+      RaiseEvent SearchProgress("Searching...")
+
       Dim mRet As New List(Of SIS.VLT.vltFolder)
       Dim Sql As String = ""
 
@@ -436,7 +451,7 @@ Namespace SIS.VLT
             Dim tmp As SIS.VLT.vltFolder = New SIS.VLT.vltFolder(rd)
             tmp.ItemType = "File"
             mRet.Add(tmp)
-            RaiseEvent SearchProgress(mRet.LongCount)
+            RaiseEvent SearchProgress("Loading " & mRet.LongCount)
             If StopIt Then Exit While
           End While
           rd.Close()
