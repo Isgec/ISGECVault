@@ -22,30 +22,20 @@ Partial Class frmLogin
   'Do not modify it using the code editor.
   <System.Diagnostics.DebuggerStepThrough()>
   Private Sub InitializeComponent()
-    Me.Label1 = New System.Windows.Forms.Label()
+    Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmLogin))
     Me.Label2 = New System.Windows.Forms.Label()
     Me.Label3 = New System.Windows.Forms.Label()
     Me.cmdCancel = New System.Windows.Forms.Button()
     Me.cmdOK = New System.Windows.Forms.Button()
-    Me.F_Server = New System.Windows.Forms.TextBox()
     Me.F_Password = New System.Windows.Forms.TextBox()
     Me.F_LoginID = New System.Windows.Forms.TextBox()
     Me.lblErr = New System.Windows.Forms.Label()
     Me.SuspendLayout()
     '
-    'Label1
-    '
-    Me.Label1.AutoSize = True
-    Me.Label1.Location = New System.Drawing.Point(24, 15)
-    Me.Label1.Name = "Label1"
-    Me.Label1.Size = New System.Drawing.Size(38, 13)
-    Me.Label1.TabIndex = 0
-    Me.Label1.Text = "Server"
-    '
     'Label2
     '
     Me.Label2.AutoSize = True
-    Me.Label2.Location = New System.Drawing.Point(15, 48)
+    Me.Label2.Location = New System.Drawing.Point(17, 23)
     Me.Label2.Name = "Label2"
     Me.Label2.Size = New System.Drawing.Size(47, 13)
     Me.Label2.TabIndex = 1
@@ -54,7 +44,7 @@ Partial Class frmLogin
     'Label3
     '
     Me.Label3.AutoSize = True
-    Me.Label3.Location = New System.Drawing.Point(9, 81)
+    Me.Label3.Location = New System.Drawing.Point(11, 56)
     Me.Label3.Name = "Label3"
     Me.Label3.Size = New System.Drawing.Size(53, 13)
     Me.Label3.TabIndex = 2
@@ -63,7 +53,7 @@ Partial Class frmLogin
     'cmdCancel
     '
     Me.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel
-    Me.cmdCancel.Location = New System.Drawing.Point(224, 120)
+    Me.cmdCancel.Location = New System.Drawing.Point(226, 95)
     Me.cmdCancel.Name = "cmdCancel"
     Me.cmdCancel.Size = New System.Drawing.Size(75, 23)
     Me.cmdCancel.TabIndex = 5
@@ -72,24 +62,17 @@ Partial Class frmLogin
     '
     'cmdOK
     '
-    Me.cmdOK.Location = New System.Drawing.Point(130, 120)
+    Me.cmdOK.Location = New System.Drawing.Point(132, 95)
     Me.cmdOK.Name = "cmdOK"
     Me.cmdOK.Size = New System.Drawing.Size(75, 23)
     Me.cmdOK.TabIndex = 4
     Me.cmdOK.Text = "Login"
     Me.cmdOK.UseVisualStyleBackColor = True
     '
-    'F_Server
-    '
-    Me.F_Server.Location = New System.Drawing.Point(74, 12)
-    Me.F_Server.MaxLength = 20
-    Me.F_Server.Name = "F_Server"
-    Me.F_Server.Size = New System.Drawing.Size(225, 20)
-    Me.F_Server.TabIndex = 1
-    '
     'F_Password
     '
-    Me.F_Password.Location = New System.Drawing.Point(74, 78)
+    Me.F_Password.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+    Me.F_Password.Location = New System.Drawing.Point(76, 53)
     Me.F_Password.MaxLength = 20
     Me.F_Password.Name = "F_Password"
     Me.F_Password.Size = New System.Drawing.Size(225, 20)
@@ -98,7 +81,8 @@ Partial Class frmLogin
     '
     'F_LoginID
     '
-    Me.F_LoginID.Location = New System.Drawing.Point(74, 45)
+    Me.F_LoginID.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+    Me.F_LoginID.Location = New System.Drawing.Point(76, 20)
     Me.F_LoginID.MaxLength = 8
     Me.F_LoginID.Name = "F_LoginID"
     Me.F_LoginID.Size = New System.Drawing.Size(225, 20)
@@ -119,35 +103,30 @@ Partial Class frmLogin
     Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
     Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
     Me.CancelButton = Me.cmdCancel
-    Me.ClientSize = New System.Drawing.Size(323, 171)
-    Me.ControlBox = False
+    Me.ClientSize = New System.Drawing.Size(323, 143)
     Me.Controls.Add(Me.lblErr)
     Me.Controls.Add(Me.F_LoginID)
     Me.Controls.Add(Me.F_Password)
-    Me.Controls.Add(Me.F_Server)
     Me.Controls.Add(Me.cmdOK)
     Me.Controls.Add(Me.cmdCancel)
     Me.Controls.Add(Me.Label3)
     Me.Controls.Add(Me.Label2)
-    Me.Controls.Add(Me.Label1)
     Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
+    Me.Icon = CType(resources.GetObject("$this.Icon"), System.Drawing.Icon)
     Me.MaximizeBox = False
     Me.MinimizeBox = False
     Me.Name = "frmLogin"
     Me.ShowInTaskbar = False
-    Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
+    Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen
     Me.Text = "Login"
     Me.ResumeLayout(False)
     Me.PerformLayout()
 
   End Sub
-
-  Friend WithEvents Label1 As Label
   Friend WithEvents Label2 As Label
   Friend WithEvents Label3 As Label
   Friend WithEvents cmdCancel As Button
   Friend WithEvents cmdOK As Button
-  Friend WithEvents F_Server As TextBox
   Friend WithEvents F_Password As TextBox
   Friend WithEvents F_LoginID As TextBox
   Friend WithEvents lblErr As Label

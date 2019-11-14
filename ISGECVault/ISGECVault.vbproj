@@ -30,7 +30,7 @@
     <MinimumRequiredVersion>1.0.0.6</MinimumRequiredVersion>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>Default.html</WebPage>
-    <ApplicationRevision>11</ApplicationRevision>
+    <ApplicationRevision>18</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>true</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -115,6 +115,12 @@
     <Compile Include="clsIcons.vb" />
     <Compile Include="clsVault.vb" />
     <Compile Include="clsVaultHandler.vb" />
+    <Compile Include="frmChangePW.Designer.vb">
+      <DependentUpon>frmChangePW.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmChangePW.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="frmDownload.Designer.vb">
       <DependentUpon>frmDownload.vb</DependentUpon>
     </Compile>
@@ -128,6 +134,12 @@
       <DependentUpon>frmISGECVault.vb</DependentUpon>
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="frmLog.Designer.vb">
+      <DependentUpon>frmLog.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmLog.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="frmLogin.Designer.vb">
       <DependentUpon>frmLogin.vb</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -135,6 +147,12 @@
     <Compile Include="frmLogin.vb">
       <SubType>Form</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
+    <Compile Include="frmServerConf.Designer.vb">
+      <DependentUpon>frmServerConf.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmServerConf.vb">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmUser.Designer.vb">
       <DependentUpon>frmUser.vb</DependentUpon>
@@ -166,6 +184,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="SQLDBCommon.vb" />
+    <Compile Include="vltLog.vb" />
     <Compile Include="vltSocket.vb" />
     <Compile Include="VLTSettings.vb" />
     <Compile Include="vltUser.vb" />
@@ -174,15 +193,24 @@
     <Compile Include="_ediALib.vb" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="frmChangePW.resx">
+      <DependentUpon>frmChangePW.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmDownload.resx">
       <DependentUpon>frmDownload.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmISGECVault.resx">
       <DependentUpon>frmISGECVault.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmLog.resx">
+      <DependentUpon>frmLog.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmLogin.resx">
       <DependentUpon>frmLogin.vb</DependentUpon>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frmServerConf.resx">
+      <DependentUpon>frmServerConf.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmUser.resx">
       <DependentUpon>frmUser.vb</DependentUpon>
@@ -207,7 +235,9 @@
     </None>
     <None Include="My Project\DataSources\ISGECVault.SIS.VLT.SelectedForDownload.datasource" />
     <None Include="My Project\DataSources\ISGECVault.SIS.VLT.Vaults.datasource" />
+    <None Include="My Project\DataSources\ISGECVault.SIS.VLT.vltConf.datasource" />
     <None Include="My Project\DataSources\ISGECVault.SIS.VLT.vltFolder.datasource" />
+    <None Include="My Project\DataSources\ISGECVault.SIS.VLT.vltLog.datasource" />
     <None Include="My Project\DataSources\ISGECVault.SIS.VLT.vltUser.datasource" />
     <None Include="My Project\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

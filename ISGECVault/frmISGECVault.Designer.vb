@@ -29,8 +29,7 @@ Partial Class frmISGECVault
     Me.mnuLogout = New System.Windows.Forms.ToolStripMenuItem()
     Me.mnuExit = New System.Windows.Forms.ToolStripMenuItem()
     Me.mnuEdit = New System.Windows.Forms.ToolStripMenuItem()
-    Me.mnuSearch = New System.Windows.Forms.ToolStripMenuItem()
-    Me.mnuAdvanceSearch = New System.Windows.Forms.ToolStripMenuItem()
+    Me.mnuChangePassword = New System.Windows.Forms.ToolStripMenuItem()
     Me.mnuVaults = New System.Windows.Forms.ToolStripMenuItem()
     Me.mnuAdmin = New System.Windows.Forms.ToolStripMenuItem()
     Me.mnuUserAuthorization = New System.Windows.Forms.ToolStripMenuItem()
@@ -64,41 +63,35 @@ Partial Class frmISGECVault
     'mnuLogin
     '
     Me.mnuLogin.Name = "mnuLogin"
-    Me.mnuLogin.Size = New System.Drawing.Size(112, 22)
+    Me.mnuLogin.Size = New System.Drawing.Size(152, 22)
     Me.mnuLogin.Text = "&Login"
     '
     'mnuLogout
     '
     Me.mnuLogout.Enabled = False
     Me.mnuLogout.Name = "mnuLogout"
-    Me.mnuLogout.Size = New System.Drawing.Size(112, 22)
+    Me.mnuLogout.Size = New System.Drawing.Size(152, 22)
     Me.mnuLogout.Text = "L&ogout"
     '
     'mnuExit
     '
     Me.mnuExit.Name = "mnuExit"
-    Me.mnuExit.Size = New System.Drawing.Size(112, 22)
+    Me.mnuExit.Size = New System.Drawing.Size(152, 22)
     Me.mnuExit.Text = "E&xit"
     '
     'mnuEdit
     '
-    Me.mnuEdit.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuSearch, Me.mnuAdvanceSearch})
+    Me.mnuEdit.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuChangePassword})
     Me.mnuEdit.Name = "mnuEdit"
     Me.mnuEdit.Size = New System.Drawing.Size(39, 20)
     Me.mnuEdit.Text = "&Edit"
     Me.mnuEdit.Visible = False
     '
-    'mnuSearch
+    'mnuChangePassword
     '
-    Me.mnuSearch.Name = "mnuSearch"
-    Me.mnuSearch.Size = New System.Drawing.Size(158, 22)
-    Me.mnuSearch.Text = "&Search"
-    '
-    'mnuAdvanceSearch
-    '
-    Me.mnuAdvanceSearch.Name = "mnuAdvanceSearch"
-    Me.mnuAdvanceSearch.Size = New System.Drawing.Size(158, 22)
-    Me.mnuAdvanceSearch.Text = "&Advance Search"
+    Me.mnuChangePassword.Name = "mnuChangePassword"
+    Me.mnuChangePassword.Size = New System.Drawing.Size(168, 22)
+    Me.mnuChangePassword.Text = "Change Password"
     '
     'mnuVaults
     '
@@ -118,20 +111,20 @@ Partial Class frmISGECVault
     'mnuUserAuthorization
     '
     Me.mnuUserAuthorization.Name = "mnuUserAuthorization"
-    Me.mnuUserAuthorization.Size = New System.Drawing.Size(172, 22)
+    Me.mnuUserAuthorization.Size = New System.Drawing.Size(183, 22)
     Me.mnuUserAuthorization.Text = "&User Authorization"
     '
     'mnuLogViewer
     '
     Me.mnuLogViewer.Name = "mnuLogViewer"
-    Me.mnuLogViewer.Size = New System.Drawing.Size(172, 22)
+    Me.mnuLogViewer.Size = New System.Drawing.Size(183, 22)
     Me.mnuLogViewer.Text = "Log Viewer"
     '
     'mnuStartServer
     '
     Me.mnuStartServer.Name = "mnuStartServer"
-    Me.mnuStartServer.Size = New System.Drawing.Size(172, 22)
-    Me.mnuStartServer.Text = "Start Server"
+    Me.mnuStartServer.Size = New System.Drawing.Size(183, 22)
+    Me.mnuStartServer.Text = "Server Configuration"
     '
     'mnuWindows
     '
@@ -195,8 +188,7 @@ Partial Class frmISGECVault
   Friend WithEvents mnuExit As ToolStripMenuItem
   Friend WithEvents mnuEdit As ToolStripMenuItem
   Friend WithEvents mnuVaults As ToolStripMenuItem
-  Friend WithEvents mnuSearch As ToolStripMenuItem
-  Friend WithEvents mnuAdvanceSearch As ToolStripMenuItem
+  Friend WithEvents mnuChangePassword As ToolStripMenuItem
   Friend WithEvents mnuAdmin As ToolStripMenuItem
   Friend WithEvents mnuUserAuthorization As ToolStripMenuItem
   Friend WithEvents mnuLogViewer As ToolStripMenuItem

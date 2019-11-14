@@ -24,26 +24,27 @@ Partial Class frmDownload
   Private Sub InitializeComponent()
     Me.components = New System.ComponentModel.Container()
     Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+    Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmDownload))
     Me.Label1 = New System.Windows.Forms.Label()
     Me.F_SaveAsPath = New System.Windows.Forms.TextBox()
     Me.cmdSelectFolder = New System.Windows.Forms.Button()
     Me.Grid1 = New System.Windows.Forms.DataGridView()
+    Me.Original = New System.Windows.Forms.DataGridViewCheckBoxColumn()
+    Me.PDFAvailable = New System.Windows.Forms.DataGridViewCheckBoxColumn()
     Me.cmdDownload = New System.Windows.Forms.Button()
     Me.cmdCancel = New System.Windows.Forms.Button()
     Me.ListBox1 = New System.Windows.Forms.ListBox()
-    Me.Button1 = New System.Windows.Forms.Button()
+    Me.cmdOpen = New System.Windows.Forms.Button()
     Me.TotFiles = New System.Windows.Forms.Label()
     Me.dnFiles = New System.Windows.Forms.Label()
     Me.Label2 = New System.Windows.Forms.Label()
     Me.FBD1 = New System.Windows.Forms.FolderBrowserDialog()
     Me.Label3 = New System.Windows.Forms.Label()
-    Me.bs1 = New System.Windows.Forms.BindingSource(Me.components)
     Me.FileName = New System.Windows.Forms.DataGridViewTextBoxColumn()
     Me.FileSize = New System.Windows.Forms.DataGridViewTextBoxColumn()
     Me.VaultKey = New System.Windows.Forms.DataGridViewTextBoxColumn()
     Me.Marked = New System.Windows.Forms.DataGridViewCheckBoxColumn()
-    Me.Original = New System.Windows.Forms.DataGridViewCheckBoxColumn()
-    Me.PDFAvailable = New System.Windows.Forms.DataGridViewCheckBoxColumn()
+    Me.bs1 = New System.Windows.Forms.BindingSource(Me.components)
     CType(Me.Grid1, System.ComponentModel.ISupportInitialize).BeginInit()
     CType(Me.bs1, System.ComponentModel.ISupportInitialize).BeginInit()
     Me.SuspendLayout()
@@ -96,6 +97,25 @@ Partial Class frmDownload
     Me.Grid1.Size = New System.Drawing.Size(736, 244)
     Me.Grid1.TabIndex = 3
     '
+    'Original
+    '
+    Me.Original.DataPropertyName = "Original"
+    DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+    DataGridViewCellStyle1.NullValue = False
+    DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+    Me.Original.DefaultCellStyle = DataGridViewCellStyle1
+    Me.Original.HeaderText = "Download Original"
+    Me.Original.Name = "Original"
+    Me.Original.Width = 60
+    '
+    'PDFAvailable
+    '
+    Me.PDFAvailable.DataPropertyName = "PDFAvailable"
+    Me.PDFAvailable.HeaderText = "PDF Available"
+    Me.PDFAvailable.Name = "PDFAvailable"
+    Me.PDFAvailable.ReadOnly = True
+    Me.PDFAvailable.Width = 60
+    '
     'cmdDownload
     '
     Me.cmdDownload.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
@@ -130,16 +150,17 @@ Partial Class frmDownload
     Me.ListBox1.Size = New System.Drawing.Size(473, 17)
     Me.ListBox1.TabIndex = 6
     '
-    'Button1
+    'cmdOpen
     '
-    Me.Button1.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.Button1.Location = New System.Drawing.Point(486, 315)
-    Me.Button1.Name = "Button1"
-    Me.Button1.Size = New System.Drawing.Size(46, 23)
-    Me.Button1.TabIndex = 7
-    Me.Button1.Text = "dn"
-    Me.Button1.UseVisualStyleBackColor = True
-    Me.Button1.Visible = False
+    Me.cmdOpen.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.cmdOpen.BackgroundImage = CType(resources.GetObject("cmdOpen.BackgroundImage"), System.Drawing.Image)
+    Me.cmdOpen.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom
+    Me.cmdOpen.Location = New System.Drawing.Point(486, 315)
+    Me.cmdOpen.Name = "cmdOpen"
+    Me.cmdOpen.Size = New System.Drawing.Size(46, 23)
+    Me.cmdOpen.TabIndex = 7
+    Me.cmdOpen.Text = ". . ."
+    Me.cmdOpen.UseVisualStyleBackColor = True
     '
     'TotFiles
     '
@@ -182,10 +203,6 @@ Partial Class frmDownload
     Me.Label3.TabIndex = 11
     Me.Label3.Text = "Downloading"
     '
-    'bs1
-    '
-    Me.bs1.DataSource = GetType(ISGECVault.SIS.VLT.SelectedForDownload)
-    '
     'FileName
     '
     Me.FileName.DataPropertyName = "FileName"
@@ -214,24 +231,9 @@ Partial Class frmDownload
     Me.Marked.HeaderText = "Selected"
     Me.Marked.Name = "Marked"
     '
-    'Original
+    'bs1
     '
-    Me.Original.DataPropertyName = "Original"
-    DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-    DataGridViewCellStyle1.NullValue = False
-    DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-    Me.Original.DefaultCellStyle = DataGridViewCellStyle1
-    Me.Original.HeaderText = "Download Original"
-    Me.Original.Name = "Original"
-    Me.Original.Width = 60
-    '
-    'PDFAvailable
-    '
-    Me.PDFAvailable.DataPropertyName = "PDFAvailable"
-    Me.PDFAvailable.HeaderText = "PDF Available"
-    Me.PDFAvailable.Name = "PDFAvailable"
-    Me.PDFAvailable.ReadOnly = True
-    Me.PDFAvailable.Width = 60
+    Me.bs1.DataSource = GetType(ISGECVault.SIS.VLT.SelectedForDownload)
     '
     'frmDownload
     '
@@ -245,7 +247,7 @@ Partial Class frmDownload
     Me.Controls.Add(Me.Label2)
     Me.Controls.Add(Me.dnFiles)
     Me.Controls.Add(Me.TotFiles)
-    Me.Controls.Add(Me.Button1)
+    Me.Controls.Add(Me.cmdOpen)
     Me.Controls.Add(Me.ListBox1)
     Me.Controls.Add(Me.cmdCancel)
     Me.Controls.Add(Me.cmdDownload)
@@ -271,7 +273,7 @@ Partial Class frmDownload
   Friend WithEvents cmdCancel As Button
   Friend WithEvents bs1 As BindingSource
   Friend WithEvents ListBox1 As ListBox
-  Friend WithEvents Button1 As Button
+  Friend WithEvents cmdOpen As Button
   Friend WithEvents TotFiles As Label
   Friend WithEvents dnFiles As Label
   Friend WithEvents Label2 As Label

@@ -7,9 +7,8 @@ Public Class frmISGECVault
 
   Private Sub mnuLogin_Click(sender As Object, e As EventArgs) Handles mnuLogin.Click
     Dim tmp As New frmLogin
-    tmp.MdiParent = Me
-    tmp.StartPosition = FormStartPosition.CenterParent
-    tmp.Show()
+    tmp.StartPosition = FormStartPosition.CenterScreen
+    tmp.ShowDialog(Me)
   End Sub
   Private Sub mnuLogout_Click(sender As Object, e As EventArgs) Handles mnuLogout.Click
     SIS.VLT.LogoutUser()
@@ -22,14 +21,12 @@ Public Class frmISGECVault
   End Sub
 
   Private Sub mnuStartServer_Click(sender As Object, e As EventArgs) Handles mnuStartServer.Click
-    'If SIS.VLT.modMain.frmSvr Is Nothing Then
-    '  SIS.VLT.modMain.frmSvr = New frmVaultServer
-    '  With SIS.VLT.modMain.frmSvr
-    '    .MdiParent = Me
-    '    .StartPosition = FormStartPosition.CenterParent
-    '  End With
-    'End If
-    'SIS.VLT.modMain.frmSvr.Show()
+    Dim tmp As New frmServerConf
+    With tmp
+      .MdiParent = Me
+      .StartPosition = FormStartPosition.CenterParent
+    End With
+    tmp.Show()
   End Sub
   Private Sub frmISGECVault_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
     'If SIS.VLT.modMain.frmSvr IsNot Nothing Then
@@ -50,5 +47,22 @@ Public Class frmISGECVault
     tmp.MdiParent = Me
     tmp.StartPosition = FormStartPosition.CenterParent
     tmp.Show()
+  End Sub
+
+  Private Sub mnuLogViewer_Click(sender As Object, e As EventArgs) Handles mnuLogViewer.Click
+    Dim tmp As New frmLog
+    tmp.MdiParent = Me
+    tmp.StartPosition = FormStartPosition.CenterParent
+    tmp.Show()
+  End Sub
+
+  Private Sub mnuChangePassword_Click(sender As Object, e As EventArgs) Handles mnuChangePassword.Click
+    Dim x As New frmChangePW
+    x.StartPosition = FormStartPosition.CenterScreen
+    x.ShowDialog(Me)
+  End Sub
+
+  Private Sub frmISGECVault_Shown(sender As Object, e As EventArgs) Handles Me.Shown
+    mnuLogin_Click(Nothing, Nothing)
   End Sub
 End Class

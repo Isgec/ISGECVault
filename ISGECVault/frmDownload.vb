@@ -221,6 +221,14 @@ Public Class frmDownload
           Exit For
         End If
       Next
+      Dim log As New SIS.VLT.vltLog
+      With log
+        .FileName = IO.Path.GetFileName(dn.SaveAsPath)
+        .IP_Address = mycli.LocalEndPoint
+        .LoginID = SIS.VLT.modMain.User.LoginID
+        .LoggedOn = Now
+      End With
+      SIS.VLT.vltLog.InsertData(log)
       If ToOpenFile Then
         Try
           System.Diagnostics.Process.Start(dn.SaveAsPath)
@@ -257,8 +265,8 @@ Public Class frmDownload
     F_SaveAsPath.Text = SIS.VLT.modMain.Settings.SelectedPath
   End Sub
 
-  Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
-    DownloadNext()
+  Private Sub cmdOpen_Click(sender As Object, e As EventArgs) Handles cmdOpen.Click
+    Process.Start(F_SaveAsPath.Text)
   End Sub
 
   Private Sub cmdSelectFolder_Click(sender As Object, e As EventArgs) Handles cmdSelectFolder.Click
@@ -289,6 +297,11 @@ Public Class xtcClient
   Public Property ReadingMode As Boolean = False
   Public Property FileMode As Boolean = False
   Public Property ServerIP As IPAddress = GetLocalIP()
+  Public ReadOnly Property LocalEndPoint As String
+    Get
+      Return ts.Client.LocalEndPoint.ToString()
+    End Get
+  End Property
 
   Public Property StopIt As Boolean
     Get

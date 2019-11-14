@@ -95,7 +95,7 @@ Namespace SIS.VLT
         Next
         Pnd.Expand()
         'Add Files
-        Dim Files As List(Of SIS.VLT.vltFolder) = SIS.VLT.vltFolder.FilesInFolder(VaultDB, ParentID, User.OnlyLatestRev)
+        Dim Files As List(Of SIS.VLT.vltFolder) = SIS.VLT.vltFolder.FilesInFolder(VaultDB, ParentID, User.OnlyLatestRev, SIS.VLT.modMain.vltConf.OnIsgecRevBasis)
         flds.AddRange(Files)
         Dim bs As New BindingSource
         bs.DataSource = flds
@@ -306,6 +306,7 @@ Namespace SIS.VLT
         .searchStr = searchStr
         .Latest = Latest
         .Grid1 = Grid
+        .OnIsgecRevBasis = SIS.VLT.modMain.vltConf.OnIsgecRevBasis
       End With
       xSearch.StartSearch()
     End Sub
@@ -366,7 +367,7 @@ Namespace SIS.VLT
         If Grid1.SelectedRows.Count = 1 Then
           Dim x As SIS.VLT.vltFolder = Grid1.SelectedRows(0).DataBoundItem
           If x.ItemType = "File" Then
-            Dim Files As List(Of SIS.VLT.vltFolder) = SIS.VLT.vltFolder.FileRevisions(VaultDB, x.FileMasterID, x.FileIterationId)
+            Dim Files As List(Of SIS.VLT.vltFolder) = SIS.VLT.vltFolder.FileRevisions(VaultDB, x.FileMasterID, x.FileIterationId, SIS.VLT.modMain.vltConf.OnIsgecRevBasis)
             Dim bs As New BindingSource
             bs.DataSource = Files
             hGrid1.DataSource = bs
@@ -389,6 +390,7 @@ Namespace SIS.VLT
     Public Property VaultDB As String = ""
     Public Property searchStr As String = ""
     Public Property Latest As Boolean = True
+    Public Property OnIsgecRevBasis As Boolean = True
     Public Property Grid1 As DataGridView = Nothing
     Public Event Completed()
     Public Event Cancelled()
@@ -403,7 +405,7 @@ Namespace SIS.VLT
       Sql &= " select @rev=PropertyDefID from PropertyDef where FriendlyName = 'ISGEC_LATESTREVISION' "
       Sql &= " select @ttl=PropertyDefID from PropertyDef where FriendlyName = 'ISGEC_DRAWINGTITLE' "
       Sql &= "  "
-      Sql &= " SELECT   "
+      Sql &= " SELECT top 5000  "
       Sql &= "  fi.FileIterationId,   "
       Sql &= "  e.CreateDate,   "
       Sql &= "  e.CreateUserID,   "
@@ -429,17 +431,26 @@ Namespace SIS.VLT
       Sql &= "  INNER JOIN dbo.Master AS m ON m.MasterID = i.MasterID   "
       Sql &= "  INNER JOIN dbo.FileMaster AS fm ON fm.FileMasterID = m.MasterID   "
       Sql &= "  WHERE LOWER(fi.FileName) Like '%" & searchStr & "%'"
-      Sql &= "  AND (fi.FileIterationId  "
-      If Latest Then
+      Sql &= "  AND fi.LifeCycleStateName = 'Released' "
+      'If Latest Then
+      'Search In Latest Revision Only
+      If Not OnIsgecRevBasis Then
+        Sql &= "  AND (fi.FileIterationId  "
         Sql &= "   = (SELECT max(FileIterationId) "
         Sql &= "      FROM FileIteration AS aa "
         Sql &= "      WHERE (LifeCycleStateName = 'Released') AND (FileName = fi.FileName))) "
       Else
-        Sql &= "   IN (SELECT FileIterationId "
-        Sql &= "      FROM FileIteration AS aa "
-        Sql &= "      WHERE (LifeCycleStateName = 'Released') AND (FileName = fi.FileName))) "
+        Sql &= "  AND (select isnull(value,'') from Property where entityid=fi.FileIterationId and PropertyDefID=@rev)  "
+        Sql &= "   = (select max(rev) from ( (SELECT (select isnull(value,'') from Property where entityid=aa.FileIterationId and PropertyDefID=@rev) as Rev "
+        Sql &= "      FROM FileIteration AS aa WHERE (aa.LifeCycleStateName = 'Released')"
+        Sql &= "      AND (aa.FileName = fi.FileName)) ) as tmp ) "
       End If
-      Sql &= "  Order By fi.FileIterationID DESC "
+      'Else
+      '  Sql &= "   IN (SELECT FileIterationId "
+      '  Sql &= "      FROM FileIteration AS aa "
+      '  Sql &= "      WHERE (LifeCycleStateName = 'Released') AND (FileName = fi.FileName))) "
+      'End If
+      Sql &= "  Order By fi.FileName "
 
       Using Con As SqlConnection = New SqlConnection(SIS.SYS.SQLDatabase.DBCommon.GetVaultConnectionString(VaultDB))
         Con.Open()

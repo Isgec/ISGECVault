@@ -19,6 +19,7 @@ Namespace SIS.VLT
     Public Property VaultLive As Boolean = True
     Public Property ISGECVaultServer As String = ""
     Public Property AutodeskVaultServer As String = ""
+    Public Property OnIsgecRevBasis As Boolean = True
     Public Shared Function GetVltConf() As SIS.VLT.vltConf
       Dim mRet As SIS.VLT.vltConf = Nothing
       Dim Sql As String = ""
@@ -38,6 +39,22 @@ Namespace SIS.VLT
         End Using
       End Using
       Return mRet
+    End Function
+    Public Shared Function UpdateData(ByVal R As SIS.VLT.vltConf) As SIS.VLT.vltConf
+      Using Con As SqlConnection = New SqlConnection(SIS.SYS.SQLDatabase.DBCommon.GetConnectionString())
+        Using Cmd As SqlCommand = Con.CreateCommand()
+          Cmd.CommandType = CommandType.Text
+          Cmd.CommandText = "update vlt_conf set active=" & IIf(R.Active, 1, 0) & " , FileLimit=" & R.FileLimit & " , sizelimit=" & R.SizeLimit
+          Cmd.CommandText &= " , originalallowed=" & IIf(R.OriginalAllowed, 1, 0) & " , pdfallowed=" & IIf(R.PDFAllowed, 1, 0)
+          Cmd.CommandText &= " , originalwhennopdf=" & IIf(R.OriginalWhenNoPDF, 1, 0) & " , baanlive=" & IIf(R.BaaNLive, 1, 0)
+          Cmd.CommandText &= " , joomlalive=" & IIf(R.JoomlaLive, 1, 0) & " , vaultlive=" & IIf(R.VaultLive, 1, 0)
+          Cmd.CommandText &= " , onisgecrevbasis=" & IIf(R.OnIsgecRevBasis, 1, 0) & " , isgecvaultserver='" & R.ISGECVaultServer & "' "
+          Cmd.CommandText &= " , autodeskvaultserver='" & R.AutodeskVaultServer & "' where confid=" & R.ConfID
+          Con.Open()
+          Cmd.ExecuteNonQuery()
+        End Using
+      End Using
+      Return R
     End Function
 
     Sub New(rd As SqlDataReader)
@@ -190,7 +207,6 @@ Namespace SIS.VLT
       Next
       Return mRet
     End Function
-
     Sub New(rd As SqlDataReader)
       SIS.VLT.UI.NewObj(Me, rd)
     End Sub
@@ -387,7 +403,7 @@ Namespace SIS.VLT
       End Get
     End Property
     Public Property VaultBasePath As String = ""
-    Public Shared Function FileRevisions(VaultDB As String, MasterID As Long, Iteration As Long) As List(Of SIS.VLT.vltFolder)
+    Public Shared Function FileRevisions(VaultDB As String, MasterID As Long, Iteration As Long, Optional OnIsgecRevBasis As Boolean = True) As List(Of SIS.VLT.vltFolder)
       Dim mRet As New List(Of SIS.VLT.vltFolder)
       Dim Sql As String = ""
 
@@ -422,10 +438,17 @@ Namespace SIS.VLT
       Sql &= "  INNER JOIN dbo.FileMaster AS fm ON fm.FileMasterID = m.MasterID   "
       Sql &= "  WHERE fm.FileMasterID =" & MasterID
       Sql &= "  AND fi.LifeCycleStateName = 'Released' "
-      Sql &= "  AND (fi.FileIterationId  "
-      Sql &= "   < (SELECT max(FileIterationId) "
-      Sql &= "      FROM FileIteration AS aa "
-      Sql &= "      WHERE (LifeCycleStateName = 'Released') AND (FileName = fi.FileName))) "
+      If Not OnIsgecRevBasis Then
+        Sql &= "  AND (fi.FileIterationId  "
+        Sql &= "   < (SELECT max(FileIterationId) "
+        Sql &= "      FROM FileIteration AS aa "
+        Sql &= "      WHERE (LifeCycleStateName = 'Released') AND (FileName = fi.FileName))) "
+      Else
+        Sql &= "  AND (select isnull(value,'') from Property where entityid=fi.FileIterationId and PropertyDefID=@rev)  "
+        Sql &= "   < (select max(rev) from ( (SELECT (select isnull(value,'') from Property where entityid=aa.FileIterationId and PropertyDefID=@rev) as Rev "
+        Sql &= "      FROM FileIteration AS aa WHERE (aa.LifeCycleStateName = 'Released')"
+        Sql &= "      AND (aa.FileName = fi.FileName)) ) as tmp ) "
+      End If
       Sql &= "  Order By fi.FileIterationID DESC "
 
       Using Con As SqlConnection = New SqlConnection(SIS.SYS.SQLDatabase.DBCommon.GetVaultConnectionString(VaultDB))
@@ -445,7 +468,7 @@ Namespace SIS.VLT
       Return mRet
     End Function
 
-    Public Shared Function FilesInFolder(VaultDB As String, Optional ParentFolderID As Long = 1, Optional Latest As Boolean = True) As List(Of SIS.VLT.vltFolder)
+    Public Shared Function FilesInFolder(VaultDB As String, Optional ParentFolderID As Long = 1, Optional Latest As Boolean = True, Optional OnIsgecRevBasis As Boolean = True) As List(Of SIS.VLT.vltFolder)
       Dim mRet As New List(Of SIS.VLT.vltFolder)
       Dim Sql As String = ""
 
@@ -479,17 +502,29 @@ Namespace SIS.VLT
       Sql &= "  INNER JOIN dbo.Master AS m ON m.MasterID = i.MasterID   "
       Sql &= "  INNER JOIN dbo.FileMaster AS fm ON fm.FileMasterID = m.MasterID   "
       Sql &= "  WHERE fm.FolderID =" & ParentFolderID
-      Sql &= "  AND (fi.FileIterationId  "
-      If Latest Then
+      Sql &= "  AND fi.LifeCycleStateName = 'Released' "
+      'If Latest Then
+      If Not OnIsgecRevBasis Then
+        Sql &= "  AND (fi.FileIterationId  "
         Sql &= "   = (SELECT max(FileIterationId) "
         Sql &= "      FROM FileIteration AS aa "
         Sql &= "      WHERE (LifeCycleStateName = 'Released') AND (FileName = fi.FileName))) "
       Else
-        Sql &= "   IN (SELECT FileIterationId "
-        Sql &= "      FROM FileIteration AS aa "
-        Sql &= "      WHERE (LifeCycleStateName = 'Released') AND (FileName = fi.FileName))) "
+        Sql &= "  AND (select isnull(value,'') from Property where entityid=fi.FileIterationId and PropertyDefID=@rev)  "
+        Sql &= "   = (select max(rev) from ( (SELECT (select isnull(value,'') from Property where entityid=aa.FileIterationId and PropertyDefID=@rev) as Rev "
+        Sql &= "      FROM FileIteration AS aa WHERE (aa.LifeCycleStateName = 'Released')"
+        Sql &= "      AND (aa.FileName = fi.FileName)) ) as tmp ) "
       End If
-      Sql &= "  Order By fi.FileIterationID DESC "
+      'Else
+      '  'This select statement selects all Released Revisions in one sql and shows in Top Grid, 
+      '  'But Top Grid should show only
+      '  'Latest Released, so else is disabled
+      '  ' If Latest Then is commented to show Latest Released always
+      '  Sql &= "   IN (SELECT FileIterationId "
+      '  Sql &= "      FROM FileIteration AS aa "
+      '  Sql &= "      WHERE (LifeCycleStateName = 'Released') AND (FileName = fi.FileName))) "
+      'End If
+      Sql &= "  Order By fi.FileName "
 
       Using Con As SqlConnection = New SqlConnection(SIS.SYS.SQLDatabase.DBCommon.GetVaultConnectionString(VaultDB))
         Con.Open()

@@ -11,7 +11,6 @@
         lblErr.Text = "Invalid Password"
       Else
         SIS.VLT.Settings.LoginID = F_LoginID.Text
-        SIS.VLT.Settings.ServerIP = F_Server.Text
         SIS.VLT.VLTSettings.Serialize(SIS.VLT.Settings)
         SIS.VLT.modMain.LoginUser(tmpUser)
         Me.Close()
@@ -22,9 +21,10 @@
   End Sub
 
   Private Sub frmLogin_Load(sender As Object, e As EventArgs) Handles Me.Load
-    Me.StartPosition = FormStartPosition.CenterParent
+    Me.StartPosition = FormStartPosition.CenterScreen
     F_LoginID.Text = SIS.VLT.Settings.LoginID
-    F_Server.Text = SIS.VLT.Settings.ServerIP
     lblErr.Text = ""
+    Me.Show()
+    F_Password.Select()
   End Sub
 End Class
