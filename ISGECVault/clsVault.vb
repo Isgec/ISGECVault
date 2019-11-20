@@ -24,6 +24,7 @@ Namespace SIS.VLT
           cmdStop = Frm1.cmdStop
           lblSearch = Frm1.lblSearch
           Pic1 = Frm1.pic1
+          lblProject = Frm1.lblSelected
         End If
       End Set
     End Property
@@ -36,6 +37,7 @@ Namespace SIS.VLT
     Private WithEvents cmdStop As Button = Nothing
     Private WithEvents lblSearch As Label = Nothing
     Private WithEvents Pic1 As PictureBox = Nothing
+    Private WithEvents lblProject As Label = Nothing
 
     Public Property VaultDB As String = ""
     Private DownloadMenuClicked As Boolean = False
@@ -55,6 +57,7 @@ Namespace SIS.VLT
     Public Property Vault As SIS.VLT.Vaults = Nothing
     Private Root As Long = 1
     Public Sub Load()
+      frmUI.lblVault.Text = VaultDB
       frmUI.Text = VaultDB
       frmUI.Show()
       LoadRoot()
@@ -119,6 +122,7 @@ Namespace SIS.VLT
           cmdSearch = Nothing
           cmdStop = Nothing
           lblSearch = Nothing
+          lblProject = Nothing
           Pic1 = Nothing
           Tree1.Dispose()
           Tree1 = Nothing
@@ -161,7 +165,16 @@ Namespace SIS.VLT
         LoadRoot()
         LoadData(Root)
       Else
+        lblProject.Text = e.Node.Text
         Dim nd As TreeNode = e.Node
+        Dim xnd As TreeNode = nd
+        lblProject.Text = xnd.Text
+        While xnd.Parent IsNot Nothing
+          xnd = xnd.Parent
+          If xnd.Level > 0 Then
+            lblProject.Text = xnd.Text & " => " & lblProject.Text
+          End If
+        End While
         Dim v As SIS.VLT.vltFolder = nd.Tag
         LoadData(v.FolderID)
       End If

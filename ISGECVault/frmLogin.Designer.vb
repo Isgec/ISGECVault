@@ -92,7 +92,7 @@ Partial Class frmLogin
     '
     Me.lblErr.AutoSize = True
     Me.lblErr.ForeColor = System.Drawing.Color.Red
-    Me.lblErr.Location = New System.Drawing.Point(12, 153)
+    Me.lblErr.Location = New System.Drawing.Point(12, 123)
     Me.lblErr.Name = "lblErr"
     Me.lblErr.Size = New System.Drawing.Size(0, 13)
     Me.lblErr.TabIndex = 6

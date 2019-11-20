@@ -13,6 +13,13 @@ Namespace SIS.VLT
     Public vltConf As SIS.VLT.vltConf = Nothing
 
     Sub main()
+      '0. Command Line Args
+      Dim arg() As String = Environment.GetCommandLineArgs()
+      If arg.Count > 1 Then
+        If arg(1).ToLower = "/joomla" Then
+          SIS.SYS.SQLDatabase.DBCommon.JoomlaDB = True
+        End If
+      End If
       '1. Read Local Settings
       StartupPath = Application.StartupPath
       Settings = SIS.VLT.VLTSettings.DeSerialize()

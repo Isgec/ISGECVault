@@ -10,6 +10,7 @@ Namespace SIS.SYS.SQLDatabase
     Public Shared Property BaaNLive As Boolean = True
     Public Shared Property JoomlaLive As Boolean = True
     Public Shared Property VaultLive As Boolean = True
+    Public Shared Property JoomlaDB As Boolean = False
     Public Shared Function GetBaaNConnectionString() As String
       If BaaNLive Then
         Return "Data Source=192.9.200.129;Initial Catalog=inforerpdb;Integrated Security=False;User Instance=False;Persist Security Info=True;User ID=lalit;Password=scorpions"
@@ -18,10 +19,14 @@ Namespace SIS.SYS.SQLDatabase
       End If
     End Function
     Public Shared Function GetConnectionString() As String
-      If JoomlaLive Then
-        Return "Data Source=192.9.200.150;Initial Catalog=IJTPerks;Integrated Security=False;User Instance=False;Persist Security Info=True;User ID=sa;Password=isgec12345"
+      If JoomlaDB Then
+        If JoomlaLive Then
+          Return "Data Source=192.9.200.150;Initial Catalog=IJTPerks;Integrated Security=False;User Instance=False;Persist Security Info=True;User ID=sa;Password=isgec12345"
+        Else
+          Return "Data Source=.\LGSQL;Initial Catalog=IJTPerks;Integrated Security=False;User Instance=False;Persist Security Info=True;User ID=sa;Password=isgec12345"
+        End If
       Else
-        Return "Data Source=.\LGSQL;Initial Catalog=IJTPerks;Integrated Security=False;User Instance=False;Persist Security Info=True;User ID=sa;Password=isgec12345"
+        Return GetVaultConnectionString()
       End If
     End Function
     Public Shared Function GetVaultConnectionString(Optional VaultDB As String = "KnowledgeVaultMaster") As String

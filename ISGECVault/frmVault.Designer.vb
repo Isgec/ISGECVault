@@ -34,17 +34,9 @@ Partial Class frmVault
     Me.SplitGrid = New System.Windows.Forms.SplitContainer()
     Me.Grid1 = New System.Windows.Forms.DataGridView()
     Me.RowIcon = New System.Windows.Forms.DataGridViewImageColumn()
-    Me.DataGridViewTextBoxColumn1 = New System.Windows.Forms.DataGridViewTextBoxColumn()
-    Me.DataGridViewTextBoxColumn3 = New System.Windows.Forms.DataGridViewTextBoxColumn()
-    Me.DataGridViewTextBoxColumn4 = New System.Windows.Forms.DataGridViewTextBoxColumn()
-    Me.DataGridViewTextBoxColumn2 = New System.Windows.Forms.DataGridViewTextBoxColumn()
-    Me.CreateDateDataGridViewTextBoxColumn = New System.Windows.Forms.DataGridViewTextBoxColumn()
-    Me.CreateUserNameDataGridViewTextBoxColumn = New System.Windows.Forms.DataGridViewTextBoxColumn()
-    Me.FileSizeDataGridViewTextBoxColumn = New System.Windows.Forms.DataGridViewTextBoxColumn()
     Me.cMnu = New System.Windows.Forms.ContextMenuStrip(Me.components)
     Me.cmnuDownload = New System.Windows.Forms.ToolStripMenuItem()
     Me.cmnuOpenOriginal = New System.Windows.Forms.ToolStripMenuItem()
-    Me.DBS = New System.Windows.Forms.BindingSource(Me.components)
     Me.SplitContainer1 = New System.Windows.Forms.SplitContainer()
     Me.pic1 = New System.Windows.Forms.PictureBox()
     Me.lblSearch = New System.Windows.Forms.Label()
@@ -53,6 +45,18 @@ Partial Class frmVault
     Me.F_txtSearch = New System.Windows.Forms.TextBox()
     Me.hGrid1 = New System.Windows.Forms.DataGridView()
     Me.DataGridViewImageColumn1 = New System.Windows.Forms.DataGridViewImageColumn()
+    Me.hMnu = New System.Windows.Forms.ContextMenuStrip(Me.components)
+    Me.hmnuDownload = New System.Windows.Forms.ToolStripMenuItem()
+    Me.hmnuOpenOriginal = New System.Windows.Forms.ToolStripMenuItem()
+    Me.lblSelected = New System.Windows.Forms.Label()
+    Me.DataGridViewTextBoxColumn1 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+    Me.DataGridViewTextBoxColumn3 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+    Me.DataGridViewTextBoxColumn4 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+    Me.DataGridViewTextBoxColumn2 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+    Me.CreateDateDataGridViewTextBoxColumn = New System.Windows.Forms.DataGridViewTextBoxColumn()
+    Me.CreateUserNameDataGridViewTextBoxColumn = New System.Windows.Forms.DataGridViewTextBoxColumn()
+    Me.FileSizeDataGridViewTextBoxColumn = New System.Windows.Forms.DataGridViewTextBoxColumn()
+    Me.DBS = New System.Windows.Forms.BindingSource(Me.components)
     Me.DataGridViewTextBoxColumn5 = New System.Windows.Forms.DataGridViewTextBoxColumn()
     Me.DataGridViewTextBoxColumn6 = New System.Windows.Forms.DataGridViewTextBoxColumn()
     Me.DataGridViewTextBoxColumn7 = New System.Windows.Forms.DataGridViewTextBoxColumn()
@@ -60,9 +64,7 @@ Partial Class frmVault
     Me.DataGridViewTextBoxColumn9 = New System.Windows.Forms.DataGridViewTextBoxColumn()
     Me.DataGridViewTextBoxColumn10 = New System.Windows.Forms.DataGridViewTextBoxColumn()
     Me.DataGridViewTextBoxColumn11 = New System.Windows.Forms.DataGridViewTextBoxColumn()
-    Me.hMnu = New System.Windows.Forms.ContextMenuStrip(Me.components)
-    Me.hmnuDownload = New System.Windows.Forms.ToolStripMenuItem()
-    Me.hmnuOpenOriginal = New System.Windows.Forms.ToolStripMenuItem()
+    Me.lblVault = New System.Windows.Forms.Label()
     CType(Me.splitTree, System.ComponentModel.ISupportInitialize).BeginInit()
     Me.splitTree.Panel1.SuspendLayout()
     Me.splitTree.Panel2.SuspendLayout()
@@ -73,7 +75,6 @@ Partial Class frmVault
     Me.SplitGrid.SuspendLayout()
     CType(Me.Grid1, System.ComponentModel.ISupportInitialize).BeginInit()
     Me.cMnu.SuspendLayout()
-    CType(Me.DBS, System.ComponentModel.ISupportInitialize).BeginInit()
     CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).BeginInit()
     Me.SplitContainer1.Panel1.SuspendLayout()
     Me.SplitContainer1.Panel2.SuspendLayout()
@@ -81,6 +82,7 @@ Partial Class frmVault
     CType(Me.pic1, System.ComponentModel.ISupportInitialize).BeginInit()
     CType(Me.hGrid1, System.ComponentModel.ISupportInitialize).BeginInit()
     Me.hMnu.SuspendLayout()
+    CType(Me.DBS, System.ComponentModel.ISupportInitialize).BeginInit()
     Me.SuspendLayout()
     '
     'splitTree
@@ -140,11 +142,11 @@ Partial Class frmVault
     '
     'SplitGrid.Panel1
     '
-    Me.SplitGrid.Panel1.Controls.Add(Me.Grid1)
+    Me.SplitGrid.Panel1.Controls.Add(Me.SplitContainer1)
     '
     'SplitGrid.Panel2
     '
-    Me.SplitGrid.Panel2.Controls.Add(Me.SplitContainer1)
+    Me.SplitGrid.Panel2.Controls.Add(Me.hGrid1)
     Me.SplitGrid.Size = New System.Drawing.Size(603, 509)
     Me.SplitGrid.SplitterDistance = 332
     Me.SplitGrid.SplitterWidth = 8
@@ -174,7 +176,7 @@ Partial Class frmVault
     Me.Grid1.Name = "Grid1"
     Me.Grid1.ReadOnly = True
     Me.Grid1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-    Me.Grid1.Size = New System.Drawing.Size(603, 332)
+    Me.Grid1.Size = New System.Drawing.Size(603, 276)
     Me.Grid1.TabIndex = 0
     '
     'RowIcon
@@ -192,6 +194,178 @@ Partial Class frmVault
     Me.RowIcon.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
     Me.RowIcon.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic
     Me.RowIcon.Width = 50
+    '
+    'cMnu
+    '
+    Me.cMnu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmnuDownload, Me.cmnuOpenOriginal})
+    Me.cMnu.Name = "cMnu"
+    Me.cMnu.Size = New System.Drawing.Size(149, 48)
+    '
+    'cmnuDownload
+    '
+    Me.cmnuDownload.Name = "cmnuDownload"
+    Me.cmnuDownload.Size = New System.Drawing.Size(148, 22)
+    Me.cmnuDownload.Text = "Download"
+    '
+    'cmnuOpenOriginal
+    '
+    Me.cmnuOpenOriginal.Name = "cmnuOpenOriginal"
+    Me.cmnuOpenOriginal.Size = New System.Drawing.Size(148, 22)
+    Me.cmnuOpenOriginal.Text = "Open Original"
+    '
+    'SplitContainer1
+    '
+    Me.SplitContainer1.Dock = System.Windows.Forms.DockStyle.Fill
+    Me.SplitContainer1.Location = New System.Drawing.Point(0, 0)
+    Me.SplitContainer1.Name = "SplitContainer1"
+    Me.SplitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal
+    '
+    'SplitContainer1.Panel1
+    '
+    Me.SplitContainer1.Panel1.Controls.Add(Me.lblVault)
+    Me.SplitContainer1.Panel1.Controls.Add(Me.lblSelected)
+    Me.SplitContainer1.Panel1.Controls.Add(Me.pic1)
+    Me.SplitContainer1.Panel1.Controls.Add(Me.lblSearch)
+    Me.SplitContainer1.Panel1.Controls.Add(Me.cmdStop)
+    Me.SplitContainer1.Panel1.Controls.Add(Me.cmdSearch)
+    Me.SplitContainer1.Panel1.Controls.Add(Me.F_txtSearch)
+    '
+    'SplitContainer1.Panel2
+    '
+    Me.SplitContainer1.Panel2.Controls.Add(Me.Grid1)
+    Me.SplitContainer1.Size = New System.Drawing.Size(603, 332)
+    Me.SplitContainer1.SplitterDistance = 52
+    Me.SplitContainer1.TabIndex = 0
+    '
+    'pic1
+    '
+    Me.pic1.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.pic1.ErrorImage = CType(resources.GetObject("pic1.ErrorImage"), System.Drawing.Image)
+    Me.pic1.Image = CType(resources.GetObject("pic1.Image"), System.Drawing.Image)
+    Me.pic1.Location = New System.Drawing.Point(555, 3)
+    Me.pic1.Name = "pic1"
+    Me.pic1.Size = New System.Drawing.Size(42, 23)
+    Me.pic1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
+    Me.pic1.TabIndex = 4
+    Me.pic1.TabStop = False
+    Me.pic1.Visible = False
+    '
+    'lblSearch
+    '
+    Me.lblSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.lblSearch.AutoSize = True
+    Me.lblSearch.ForeColor = System.Drawing.SystemColors.ControlDarkDark
+    Me.lblSearch.Location = New System.Drawing.Point(161, 8)
+    Me.lblSearch.Name = "lblSearch"
+    Me.lblSearch.Size = New System.Drawing.Size(41, 13)
+    Me.lblSearch.TabIndex = 3
+    Me.lblSearch.Text = "Search"
+    '
+    'cmdStop
+    '
+    Me.cmdStop.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.cmdStop.Enabled = False
+    Me.cmdStop.ImageIndex = 13
+    Me.cmdStop.ImageList = Me.Img1
+    Me.cmdStop.Location = New System.Drawing.Point(520, 3)
+    Me.cmdStop.Name = "cmdStop"
+    Me.cmdStop.Size = New System.Drawing.Size(29, 23)
+    Me.cmdStop.TabIndex = 2
+    Me.cmdStop.UseVisualStyleBackColor = True
+    '
+    'cmdSearch
+    '
+    Me.cmdSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.cmdSearch.ImageIndex = 12
+    Me.cmdSearch.ImageList = Me.Img1
+    Me.cmdSearch.Location = New System.Drawing.Point(485, 3)
+    Me.cmdSearch.Name = "cmdSearch"
+    Me.cmdSearch.Size = New System.Drawing.Size(29, 23)
+    Me.cmdSearch.TabIndex = 1
+    Me.cmdSearch.UseVisualStyleBackColor = True
+    '
+    'F_txtSearch
+    '
+    Me.F_txtSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+    Me.F_txtSearch.BackColor = System.Drawing.Color.Gainsboro
+    Me.F_txtSearch.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+    Me.F_txtSearch.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+    Me.F_txtSearch.Location = New System.Drawing.Point(234, 5)
+    Me.F_txtSearch.MaxLength = 100
+    Me.F_txtSearch.Name = "F_txtSearch"
+    Me.F_txtSearch.Size = New System.Drawing.Size(246, 21)
+    Me.F_txtSearch.TabIndex = 0
+    '
+    'hGrid1
+    '
+    Me.hGrid1.AllowUserToAddRows = False
+    Me.hGrid1.AllowUserToDeleteRows = False
+    Me.hGrid1.AutoGenerateColumns = False
+    Me.hGrid1.BackgroundColor = System.Drawing.Color.White
+    Me.hGrid1.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None
+    DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+    DataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control
+    DataGridViewCellStyle3.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+    DataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText
+    DataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight
+    DataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+    DataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+    Me.hGrid1.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle3
+    Me.hGrid1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+    Me.hGrid1.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.DataGridViewImageColumn1, Me.DataGridViewTextBoxColumn5, Me.DataGridViewTextBoxColumn6, Me.DataGridViewTextBoxColumn7, Me.DataGridViewTextBoxColumn8, Me.DataGridViewTextBoxColumn9, Me.DataGridViewTextBoxColumn10, Me.DataGridViewTextBoxColumn11})
+    Me.hGrid1.ContextMenuStrip = Me.hMnu
+    Me.hGrid1.DataSource = Me.DBS
+    Me.hGrid1.Dock = System.Windows.Forms.DockStyle.Fill
+    Me.hGrid1.Location = New System.Drawing.Point(0, 0)
+    Me.hGrid1.Name = "hGrid1"
+    Me.hGrid1.ReadOnly = True
+    Me.hGrid1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
+    Me.hGrid1.Size = New System.Drawing.Size(603, 169)
+    Me.hGrid1.TabIndex = 1
+    '
+    'DataGridViewImageColumn1
+    '
+    Me.DataGridViewImageColumn1.DataPropertyName = "RowIcon"
+    DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
+    DataGridViewCellStyle4.NullValue = CType(resources.GetObject("DataGridViewCellStyle4.NullValue"), Object)
+    DataGridViewCellStyle4.Padding = New System.Windows.Forms.Padding(2)
+    Me.DataGridViewImageColumn1.DefaultCellStyle = DataGridViewCellStyle4
+    Me.DataGridViewImageColumn1.HeaderText = "Type"
+    Me.DataGridViewImageColumn1.Image = CType(resources.GetObject("DataGridViewImageColumn1.Image"), System.Drawing.Image)
+    Me.DataGridViewImageColumn1.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom
+    Me.DataGridViewImageColumn1.Name = "DataGridViewImageColumn1"
+    Me.DataGridViewImageColumn1.ReadOnly = True
+    Me.DataGridViewImageColumn1.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
+    Me.DataGridViewImageColumn1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic
+    Me.DataGridViewImageColumn1.Width = 50
+    '
+    'hMnu
+    '
+    Me.hMnu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.hmnuDownload, Me.hmnuOpenOriginal})
+    Me.hMnu.Name = "hMnu"
+    Me.hMnu.Size = New System.Drawing.Size(149, 48)
+    '
+    'hmnuDownload
+    '
+    Me.hmnuDownload.Name = "hmnuDownload"
+    Me.hmnuDownload.Size = New System.Drawing.Size(148, 22)
+    Me.hmnuDownload.Text = "Download"
+    '
+    'hmnuOpenOriginal
+    '
+    Me.hmnuOpenOriginal.Name = "hmnuOpenOriginal"
+    Me.hmnuOpenOriginal.Size = New System.Drawing.Size(148, 22)
+    Me.hmnuOpenOriginal.Text = "Open Original"
+    '
+    'lblSelected
+    '
+    Me.lblSelected.AutoSize = True
+    Me.lblSelected.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+    Me.lblSelected.ForeColor = System.Drawing.Color.DimGray
+    Me.lblSelected.Location = New System.Drawing.Point(5, 28)
+    Me.lblSelected.Name = "lblSelected"
+    Me.lblSelected.Size = New System.Drawing.Size(0, 17)
+    Me.lblSelected.TabIndex = 5
     '
     'DataGridViewTextBoxColumn1
     '
@@ -245,146 +419,9 @@ Partial Class frmVault
     Me.FileSizeDataGridViewTextBoxColumn.Name = "FileSizeDataGridViewTextBoxColumn"
     Me.FileSizeDataGridViewTextBoxColumn.ReadOnly = True
     '
-    'cMnu
-    '
-    Me.cMnu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.cmnuDownload, Me.cmnuOpenOriginal})
-    Me.cMnu.Name = "cMnu"
-    Me.cMnu.Size = New System.Drawing.Size(149, 48)
-    '
-    'cmnuDownload
-    '
-    Me.cmnuDownload.Name = "cmnuDownload"
-    Me.cmnuDownload.Size = New System.Drawing.Size(148, 22)
-    Me.cmnuDownload.Text = "Download"
-    '
-    'cmnuOpenOriginal
-    '
-    Me.cmnuOpenOriginal.Name = "cmnuOpenOriginal"
-    Me.cmnuOpenOriginal.Size = New System.Drawing.Size(148, 22)
-    Me.cmnuOpenOriginal.Text = "Open Original"
-    '
     'DBS
     '
     Me.DBS.DataSource = GetType(ISGECVault.SIS.VLT.vltFolder)
-    '
-    'SplitContainer1
-    '
-    Me.SplitContainer1.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.SplitContainer1.Location = New System.Drawing.Point(0, 0)
-    Me.SplitContainer1.Name = "SplitContainer1"
-    Me.SplitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal
-    '
-    'SplitContainer1.Panel1
-    '
-    Me.SplitContainer1.Panel1.Controls.Add(Me.pic1)
-    Me.SplitContainer1.Panel1.Controls.Add(Me.lblSearch)
-    Me.SplitContainer1.Panel1.Controls.Add(Me.cmdStop)
-    Me.SplitContainer1.Panel1.Controls.Add(Me.cmdSearch)
-    Me.SplitContainer1.Panel1.Controls.Add(Me.F_txtSearch)
-    '
-    'SplitContainer1.Panel2
-    '
-    Me.SplitContainer1.Panel2.Controls.Add(Me.hGrid1)
-    Me.SplitContainer1.Size = New System.Drawing.Size(603, 169)
-    Me.SplitContainer1.SplitterDistance = 38
-    Me.SplitContainer1.TabIndex = 0
-    '
-    'pic1
-    '
-    Me.pic1.Image = CType(resources.GetObject("pic1.Image"), System.Drawing.Image)
-    Me.pic1.Location = New System.Drawing.Point(4, 3)
-    Me.pic1.Name = "pic1"
-    Me.pic1.Size = New System.Drawing.Size(40, 40)
-    Me.pic1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage
-    Me.pic1.TabIndex = 4
-    Me.pic1.TabStop = False
-    Me.pic1.Visible = False
-    '
-    'lblSearch
-    '
-    Me.lblSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.lblSearch.AutoSize = True
-    Me.lblSearch.ForeColor = System.Drawing.Color.Green
-    Me.lblSearch.Location = New System.Drawing.Point(203, 13)
-    Me.lblSearch.Name = "lblSearch"
-    Me.lblSearch.Size = New System.Drawing.Size(41, 13)
-    Me.lblSearch.TabIndex = 3
-    Me.lblSearch.Text = "Search"
-    '
-    'cmdStop
-    '
-    Me.cmdStop.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.cmdStop.Enabled = False
-    Me.cmdStop.ImageIndex = 13
-    Me.cmdStop.ImageList = Me.Img1
-    Me.cmdStop.Location = New System.Drawing.Point(562, 8)
-    Me.cmdStop.Name = "cmdStop"
-    Me.cmdStop.Size = New System.Drawing.Size(29, 23)
-    Me.cmdStop.TabIndex = 2
-    Me.cmdStop.UseVisualStyleBackColor = True
-    '
-    'cmdSearch
-    '
-    Me.cmdSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.cmdSearch.ImageIndex = 12
-    Me.cmdSearch.ImageList = Me.Img1
-    Me.cmdSearch.Location = New System.Drawing.Point(527, 8)
-    Me.cmdSearch.Name = "cmdSearch"
-    Me.cmdSearch.Size = New System.Drawing.Size(29, 23)
-    Me.cmdSearch.TabIndex = 1
-    Me.cmdSearch.UseVisualStyleBackColor = True
-    '
-    'F_txtSearch
-    '
-    Me.F_txtSearch.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-    Me.F_txtSearch.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-    Me.F_txtSearch.Location = New System.Drawing.Point(276, 10)
-    Me.F_txtSearch.Name = "F_txtSearch"
-    Me.F_txtSearch.Size = New System.Drawing.Size(246, 20)
-    Me.F_txtSearch.TabIndex = 0
-    '
-    'hGrid1
-    '
-    Me.hGrid1.AllowUserToAddRows = False
-    Me.hGrid1.AllowUserToDeleteRows = False
-    Me.hGrid1.AutoGenerateColumns = False
-    Me.hGrid1.BackgroundColor = System.Drawing.Color.White
-    Me.hGrid1.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None
-    DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-    DataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control
-    DataGridViewCellStyle3.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-    DataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText
-    DataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight
-    DataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-    DataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-    Me.hGrid1.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle3
-    Me.hGrid1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-    Me.hGrid1.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.DataGridViewImageColumn1, Me.DataGridViewTextBoxColumn5, Me.DataGridViewTextBoxColumn6, Me.DataGridViewTextBoxColumn7, Me.DataGridViewTextBoxColumn8, Me.DataGridViewTextBoxColumn9, Me.DataGridViewTextBoxColumn10, Me.DataGridViewTextBoxColumn11})
-    Me.hGrid1.ContextMenuStrip = Me.hMnu
-    Me.hGrid1.DataSource = Me.DBS
-    Me.hGrid1.Dock = System.Windows.Forms.DockStyle.Fill
-    Me.hGrid1.Location = New System.Drawing.Point(0, 0)
-    Me.hGrid1.Name = "hGrid1"
-    Me.hGrid1.ReadOnly = True
-    Me.hGrid1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-    Me.hGrid1.Size = New System.Drawing.Size(603, 127)
-    Me.hGrid1.TabIndex = 1
-    '
-    'DataGridViewImageColumn1
-    '
-    Me.DataGridViewImageColumn1.DataPropertyName = "RowIcon"
-    DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter
-    DataGridViewCellStyle4.NullValue = CType(resources.GetObject("DataGridViewCellStyle4.NullValue"), Object)
-    DataGridViewCellStyle4.Padding = New System.Windows.Forms.Padding(2)
-    Me.DataGridViewImageColumn1.DefaultCellStyle = DataGridViewCellStyle4
-    Me.DataGridViewImageColumn1.HeaderText = "Type"
-    Me.DataGridViewImageColumn1.Image = CType(resources.GetObject("DataGridViewImageColumn1.Image"), System.Drawing.Image)
-    Me.DataGridViewImageColumn1.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom
-    Me.DataGridViewImageColumn1.Name = "DataGridViewImageColumn1"
-    Me.DataGridViewImageColumn1.ReadOnly = True
-    Me.DataGridViewImageColumn1.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
-    Me.DataGridViewImageColumn1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic
-    Me.DataGridViewImageColumn1.Width = 50
     '
     'DataGridViewTextBoxColumn5
     '
@@ -438,23 +475,15 @@ Partial Class frmVault
     Me.DataGridViewTextBoxColumn11.Name = "DataGridViewTextBoxColumn11"
     Me.DataGridViewTextBoxColumn11.ReadOnly = True
     '
-    'hMnu
+    'lblVault
     '
-    Me.hMnu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.hmnuDownload, Me.hmnuOpenOriginal})
-    Me.hMnu.Name = "hMnu"
-    Me.hMnu.Size = New System.Drawing.Size(149, 48)
-    '
-    'hmnuDownload
-    '
-    Me.hmnuDownload.Name = "hmnuDownload"
-    Me.hmnuDownload.Size = New System.Drawing.Size(148, 22)
-    Me.hmnuDownload.Text = "Download"
-    '
-    'hmnuOpenOriginal
-    '
-    Me.hmnuOpenOriginal.Name = "hmnuOpenOriginal"
-    Me.hmnuOpenOriginal.Size = New System.Drawing.Size(148, 22)
-    Me.hmnuOpenOriginal.Text = "Open Original"
+    Me.lblVault.AutoSize = True
+    Me.lblVault.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+    Me.lblVault.ForeColor = System.Drawing.Color.DimGray
+    Me.lblVault.Location = New System.Drawing.Point(5, 7)
+    Me.lblVault.Name = "lblVault"
+    Me.lblVault.Size = New System.Drawing.Size(0, 17)
+    Me.lblVault.TabIndex = 6
     '
     'frmVault
     '
@@ -477,7 +506,6 @@ Partial Class frmVault
     Me.SplitGrid.ResumeLayout(False)
     CType(Me.Grid1, System.ComponentModel.ISupportInitialize).EndInit()
     Me.cMnu.ResumeLayout(False)
-    CType(Me.DBS, System.ComponentModel.ISupportInitialize).EndInit()
     Me.SplitContainer1.Panel1.ResumeLayout(False)
     Me.SplitContainer1.Panel1.PerformLayout()
     Me.SplitContainer1.Panel2.ResumeLayout(False)
@@ -486,6 +514,7 @@ Partial Class frmVault
     CType(Me.pic1, System.ComponentModel.ISupportInitialize).EndInit()
     CType(Me.hGrid1, System.ComponentModel.ISupportInitialize).EndInit()
     Me.hMnu.ResumeLayout(False)
+    CType(Me.DBS, System.ComponentModel.ISupportInitialize).EndInit()
     Me.ResumeLayout(False)
 
   End Sub
@@ -529,4 +558,6 @@ Partial Class frmVault
   Friend WithEvents hmnuDownload As ToolStripMenuItem
   Friend WithEvents hmnuOpenOriginal As ToolStripMenuItem
   Friend WithEvents pic1 As PictureBox
+  Friend WithEvents lblSelected As Label
+  Friend WithEvents lblVault As Label
 End Class
