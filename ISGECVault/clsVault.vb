@@ -74,6 +74,7 @@ Namespace SIS.VLT
     End Sub
     Private Sub LoadData(ParentID As Long)
       Pic1.Visible = True
+      hGrid1.Rows.Clear()
       Dim Parent() As TreeNode = Tree1.Nodes.Find(ParentID, True)
       Dim Pnd As TreeNode = Nothing
       If Parent.Count > 0 Then
@@ -98,7 +99,7 @@ Namespace SIS.VLT
         Next
         Pnd.Expand()
         'Add Files
-        Dim Files As List(Of SIS.VLT.vltFolder) = SIS.VLT.vltFolder.FilesInFolder(VaultDB, ParentID, User.OnlyLatestRev, SIS.VLT.modMain.vltConf.OnIsgecRevBasis)
+        Dim Files As List(Of SIS.VLT.vltFolder) = SIS.VLT.vltFolder.FilesInFolder(VaultDB, User.WIPAllowed, ParentID, User.OnlyLatestRev, SIS.VLT.modMain.vltConf.OnIsgecRevBasis)
         flds.AddRange(Files)
         Dim bs As New BindingSource
         bs.DataSource = flds
@@ -308,31 +309,38 @@ Namespace SIS.VLT
       End If
     End Sub
     Private WithEvents xSearch As SIS.VLT.vltSearch = Nothing
-    Delegate Sub ThreadedSearch(VaultDB As String, searchStr As String, Latest As Boolean, grid As DataGridView)
+    Delegate Sub ThreadedSearch(VaultDB As String, searchStr As String, Latest As Boolean, grid As DataGridView, FolderID As Long)
     Delegate Sub NoPara()
     Delegate Sub WithStr(str As String)
     Private Searching As Boolean = False
-    Private Sub LoadSearchData(VaultDB As String, searchStr As String, Latest As Boolean, Grid As DataGridView)
+    Private Sub LoadSearchData(VaultDB As String, searchStr As String, Latest As Boolean, Grid As DataGridView, FolderID As Long)
       xSearch = New SIS.VLT.vltSearch
       With xSearch
         .VaultDB = VaultDB
-        .searchStr = searchStr
+        .searchStr = searchStr.ToLower
         .Latest = Latest
         .Grid1 = Grid
         .OnIsgecRevBasis = SIS.VLT.modMain.vltConf.OnIsgecRevBasis
+        .FolderID = FolderID
       End With
       xSearch.StartSearch()
     End Sub
 
     Private Sub cmdSearch_Click(sender As Object, e As EventArgs) Handles cmdSearch.Click
       If txtSearch.Text = "" Then Exit Sub
+      If Tree1.SelectedNode Is Nothing Then Tree1.SelectedNode = Tree1.Nodes(0)
+      Dim v As SIS.VLT.vltFolder = Tree1.SelectedNode.Tag
+      Dim FolderID As Long = 0
+      If v IsNot Nothing Then
+        FolderID = v.FolderID
+      End If
       cmdSearch.Enabled = False
       cmdStop.Enabled = True
       lblSearch.Text = ""
       Pic1.Visible = True
       Searching = True
       Dim dSearch As ThreadedSearch = New ThreadedSearch(AddressOf LoadSearchData)
-      dSearch.BeginInvoke(VaultDB, txtSearch.Text, User.OnlyLatestRev, Grid1, Nothing, Nothing)
+      dSearch.BeginInvoke(VaultDB, txtSearch.Text, User.OnlyLatestRev, Grid1, FolderID, Nothing, Nothing)
     End Sub
 
     Private Sub xSearch_Completed() Handles xSearch.Completed
@@ -405,6 +413,7 @@ Namespace SIS.VLT
     Public Property Latest As Boolean = True
     Public Property OnIsgecRevBasis As Boolean = True
     Public Property Grid1 As DataGridView = Nothing
+    Public Property FolderID As Long = 0
     Public Event Completed()
     Public Event Cancelled()
     Public Event SearchProgress(str As String)
@@ -418,6 +427,22 @@ Namespace SIS.VLT
       Sql &= " select @rev=PropertyDefID from PropertyDef where FriendlyName = 'ISGEC_LATESTREVISION' "
       Sql &= " select @ttl=PropertyDefID from PropertyDef where FriendlyName = 'ISGEC_DRAWINGTITLE' "
       Sql &= "  "
+      If FolderID > 0 Then
+        Sql &= "  CREATE TABLE #PageIndex1 ( "
+        Sql &= "  IndexID INT IDENTITY (1, 1) NOT NULL "
+        Sql &= " ,FolderID BigInt NOT NULL "
+        Sql &= "  ); "
+        Sql &= "  "
+        Sql &= "	WITH xcte (folderid) AS ( "
+        Sql &= "    SELECT folderid FROM folder "
+        Sql &= "    WHERE folderid = " & FolderID
+        Sql &= "    UNION ALL "
+        Sql &= "    SELECT c.folderid FROM folder c "
+        Sql &= "    INNER JOIN xcte ON xcte.folderid = c.parentfolderid  "
+        Sql &= " ) "
+        Sql &= " insert into #PageIndex1 (FolderID) "
+        Sql &= " SELECT folderid FROM xcte "
+      End If
       Sql &= " SELECT top 5000  "
       Sql &= "  fi.FileIterationId,   "
       Sql &= "  e.CreateDate,   "
@@ -443,8 +468,12 @@ Namespace SIS.VLT
       Sql &= "  INNER JOIN dbo.v_User AS uf ON uf.UserGroupID = e.CreateUserID   "
       Sql &= "  INNER JOIN dbo.Master AS m ON m.MasterID = i.MasterID   "
       Sql &= "  INNER JOIN dbo.FileMaster AS fm ON fm.FileMasterID = m.MasterID   "
-      Sql &= "  WHERE LOWER(fi.FileName) Like '%" & searchStr & "%'"
+      Sql &= "  WHERE (LOWER(fi.FileName) Like '%" & searchStr & "%'"
+      Sql &= "    OR (select lower(convert(nvarchar(100),isnull(value,''))) from Property where entityid=fi.FileIterationId and PropertyDefID=@ttl) Like '%" & searchStr & "%')"
       Sql &= "  AND fi.LifeCycleStateName = 'Released' "
+      If FolderID > 0 Then
+        Sql &= "  AND fm.FolderId in (Select FolderID from #PageIndex1) "
+      End If
       'If Latest Then
       'Search In Latest Revision Only
       If Not OnIsgecRevBasis Then
@@ -470,6 +499,7 @@ Namespace SIS.VLT
         Using Cmd As SqlCommand = Con.CreateCommand()
           Cmd.CommandType = CommandType.Text
           Cmd.CommandText = Sql
+          Cmd.CommandTimeout = 600 'Seconds i.e. 10 min
           Dim rd As SqlDataReader = Cmd.ExecuteReader
           While rd.Read
             Dim tmp As SIS.VLT.vltFolder = New SIS.VLT.vltFolder(rd)

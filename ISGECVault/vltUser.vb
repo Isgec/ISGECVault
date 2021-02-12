@@ -75,6 +75,7 @@ Namespace SIS.VLT
     Public Property PDFAllowed As Boolean = True
     Public Property OriginalWhenNoPDF As Boolean = True
     Public Property OnlyLatestRev As Boolean = True
+    Public Property WIPAllowed As Boolean = False
     Public Property ISGECVaultServer As String = ""
     'Selected Path => Only to store user local workspace 
     Public Property SelectedPath As String = ""
@@ -155,6 +156,7 @@ Namespace SIS.VLT
           SIS.SYS.SQLDatabase.DBCommon.AddDBParameter(Cmd, "@OnlyLatestRev", SqlDbType.Bit, 3, Record.OnlyLatestRev)
           SIS.SYS.SQLDatabase.DBCommon.AddDBParameter(Cmd, "@ISGECVaultServer", SqlDbType.NVarChar, 51, IIf(Record.ISGECVaultServer = "", Convert.DBNull, Record.ISGECVaultServer))
           SIS.SYS.SQLDatabase.DBCommon.AddDBParameter(Cmd, "@SelectedPath", SqlDbType.NVarChar, 501, IIf(Record.SelectedPath = "", Convert.DBNull, Record.SelectedPath))
+          SIS.SYS.SQLDatabase.DBCommon.AddDBParameter(Cmd, "@WIPAllowed", SqlDbType.Bit, 3, Record.WIPAllowed)
           Cmd.Parameters.Add("@Return_LoginID", SqlDbType.NVarChar, 9)
           Cmd.Parameters("@Return_LoginID").Direction = ParameterDirection.Output
           Con.Open()
@@ -181,6 +183,7 @@ Namespace SIS.VLT
           SIS.SYS.SQLDatabase.DBCommon.AddDBParameter(Cmd, "@OnlyLatestRev", SqlDbType.Bit, 3, Record.OnlyLatestRev)
           SIS.SYS.SQLDatabase.DBCommon.AddDBParameter(Cmd, "@ISGECVaultServer", SqlDbType.NVarChar, 51, IIf(Record.ISGECVaultServer = "", Convert.DBNull, Record.ISGECVaultServer))
           SIS.SYS.SQLDatabase.DBCommon.AddDBParameter(Cmd, "@SelectedPath", SqlDbType.NVarChar, 501, IIf(Record.SelectedPath = "", Convert.DBNull, Record.SelectedPath))
+          SIS.SYS.SQLDatabase.DBCommon.AddDBParameter(Cmd, "@WIPAllowed", SqlDbType.Bit, 3, Record.WIPAllowed)
           Cmd.Parameters.Add("@RowCount", SqlDbType.Int)
           Cmd.Parameters("@RowCount").Direction = ParameterDirection.Output
           Con.Open()
@@ -314,6 +317,7 @@ Namespace SIS.VLT
         Using Cmd As SqlCommand = Con.CreateCommand()
           Cmd.CommandType = CommandType.Text
           Cmd.CommandText = Sql
+          Cmd.CommandTimeout = 600 'Seconds i.e. 10 min
           Dim rd As SqlDataReader = Cmd.ExecuteReader
           While rd.Read
             mRet.Add(New SIS.VLT.Vaults(rd))
@@ -456,6 +460,7 @@ Namespace SIS.VLT
         Using Cmd As SqlCommand = Con.CreateCommand()
           Cmd.CommandType = CommandType.Text
           Cmd.CommandText = Sql
+          Cmd.CommandTimeout = 600 'Seconds i.e. 10 min
           Dim rd As SqlDataReader = Cmd.ExecuteReader
           While rd.Read
             Dim tmp As SIS.VLT.vltFolder = New SIS.VLT.vltFolder(rd)
@@ -468,7 +473,7 @@ Namespace SIS.VLT
       Return mRet
     End Function
 
-    Public Shared Function FilesInFolder(VaultDB As String, Optional ParentFolderID As Long = 1, Optional Latest As Boolean = True, Optional OnIsgecRevBasis As Boolean = True) As List(Of SIS.VLT.vltFolder)
+    Public Shared Function FilesInFolder(VaultDB As String, WIP As Boolean, Optional ParentFolderID As Long = 1, Optional Latest As Boolean = True, Optional OnIsgecRevBasis As Boolean = True) As List(Of SIS.VLT.vltFolder)
       Dim mRet As New List(Of SIS.VLT.vltFolder)
       Dim Sql As String = ""
 
@@ -502,18 +507,36 @@ Namespace SIS.VLT
       Sql &= "  INNER JOIN dbo.Master AS m ON m.MasterID = i.MasterID   "
       Sql &= "  INNER JOIN dbo.FileMaster AS fm ON fm.FileMasterID = m.MasterID   "
       Sql &= "  WHERE fm.FolderID =" & ParentFolderID
-      Sql &= "  AND fi.LifeCycleStateName = 'Released' "
+      If Not WIP Then
+        Sql &= "  AND fi.LifeCycleStateName = 'Released' "
+      End If
       'If Latest Then
       If Not OnIsgecRevBasis Then
         Sql &= "  AND (fi.FileIterationId  "
         Sql &= "   = (SELECT max(FileIterationId) "
         Sql &= "      FROM FileIteration AS aa "
-        Sql &= "      WHERE (LifeCycleStateName = 'Released') AND (FileName = fi.FileName))) "
+        Sql &= "      WHERE (FileName = fi.FileName) "
+        If Not WIP Then
+          Sql &= "      AND (LifeCycleStateName = 'Released') "
+        End If
+        Sql &= "      )) "
       Else
-        Sql &= "  AND (select isnull(value,'') from Property where entityid=fi.FileIterationId and PropertyDefID=@rev)  "
-        Sql &= "   = (select max(rev) from ( (SELECT (select isnull(value,'') from Property where entityid=aa.FileIterationId and PropertyDefID=@rev) as Rev "
-        Sql &= "      FROM FileIteration AS aa WHERE (aa.LifeCycleStateName = 'Released')"
-        Sql &= "      AND (aa.FileName = fi.FileName)) ) as tmp ) "
+
+        If Not WIP Then
+          Sql &= "  AND (select isnull(value,'') from Property where entityid=fi.FileIterationId and PropertyDefID=@rev)  "
+          Sql &= "   = (select max(rev) from ( (SELECT (select isnull(value,'') from Property where entityid=aa.FileIterationId and PropertyDefID=@rev) as Rev "
+          Sql &= "      FROM FileIteration AS aa "
+          Sql &= "      WHERE "
+          Sql &= "       (aa.FileName = fi.FileName) "
+          Sql &= "      AND (aa.LifeCycleStateName = 'Released') "
+          Sql &= "      ) ) as tmp ) "
+        Else
+          Sql &= "  AND (fi.FileIterationId  "
+          Sql &= "   = (SELECT max(FileIterationId) "
+          Sql &= "      FROM FileIteration AS aa "
+          Sql &= "      WHERE (FileName = fi.FileName) "
+          Sql &= "      )) "
+        End If
       End If
       'Else
       '  'This select statement selects all Released Revisions in one sql and shows in Top Grid, 
@@ -531,6 +554,7 @@ Namespace SIS.VLT
         Using Cmd As SqlCommand = Con.CreateCommand()
           Cmd.CommandType = CommandType.Text
           Cmd.CommandText = Sql
+          Cmd.CommandTimeout = 600 'Seconds i.e. 10 min
           Dim rd As SqlDataReader = Cmd.ExecuteReader
           While rd.Read
             Dim tmp As SIS.VLT.vltFolder = New SIS.VLT.vltFolder(rd)

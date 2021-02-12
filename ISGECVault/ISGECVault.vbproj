@@ -30,7 +30,7 @@
     <MinimumRequiredVersion>1.0.0.6</MinimumRequiredVersion>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>Default.html</WebPage>
-    <ApplicationRevision>19</ApplicationRevision>
+    <ApplicationRevision>25</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>true</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -73,10 +73,10 @@
     <ApplicationIcon>191180.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>213534E1D73BBCC5D6EC958C984DC9C038CD4513</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>CC5278C7C99E2B6AAAC246605CD026F1DB375E2F</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>ISGECVault_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>ISGECVault_1_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -154,6 +154,12 @@
     <Compile Include="frmServerConf.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="frmSoc.Designer.vb">
+      <DependentUpon>frmSoc.vb</DependentUpon>
+    </Compile>
+    <Compile Include="frmSoc.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="frmUser.Designer.vb">
       <DependentUpon>frmUser.vb</DependentUpon>
     </Compile>
@@ -195,12 +201,15 @@
   <ItemGroup>
     <EmbeddedResource Include="frmChangePW.resx">
       <DependentUpon>frmChangePW.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="frmDownload.resx">
       <DependentUpon>frmDownload.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="frmISGECVault.resx">
       <DependentUpon>frmISGECVault.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="frmLog.resx">
       <DependentUpon>frmLog.vb</DependentUpon>
@@ -212,11 +221,15 @@
     <EmbeddedResource Include="frmServerConf.resx">
       <DependentUpon>frmServerConf.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="frmSoc.resx">
+      <DependentUpon>frmSoc.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmUser.resx">
       <DependentUpon>frmUser.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmVault.resx">
       <DependentUpon>frmVault.vb</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="My Project\Resources.resx">
       <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
@@ -226,6 +239,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ISGECVault_1_TemporaryKey.pfx" />
     <None Include="ISGECVault_TemporaryKey.pfx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -283,6 +297,25 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="AxMSWinsockLib">
+      <Guid>{248DD890-BB45-11CF-9ABC-0080C7E7B78D}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>aximp</WrapperTool>
+      <Isolated>False</Isolated>
+    </COMReference>
+    <COMReference Include="MSWinsockLib">
+      <Guid>{248DD890-BB45-11CF-9ABC-0080C7E7B78D}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

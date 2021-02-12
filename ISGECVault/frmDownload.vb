@@ -72,6 +72,7 @@ Public Class frmDownload
         If host.AddressList.Count <= 0 Then
           'Using Obsolute Method, as BAD DNS configuration setting on DNS Server
           host = Dns.Resolve(str)
+          'host = Dns.GetHostEntry(str)
         End If
       End If
       Dim ipaddr As IPAddress() = host.AddressList
